@@ -15,12 +15,12 @@ class IndikatorKinerjaController extends Controller
             ->leftJoin('users as penyetuju', 'indikator_kinerja.disetujui_oleh', '=', 'penyetuju.user_id')
             ->select('indikator_kinerja.*', 'kriteria.nama_kriteria', 'kriteria.kode_kriteria', 'pembuat.name as pembuat', 'penyetuju.name as penyetuju');
 
-        if (auth()->user()->role_id != 1) {
+        if (auth()->user()->role_id != 1 && auth()->user()->role_id != 4) {
             $query->where('indikator_kinerja.dibuat_oleh', auth()->id());
         }
 
-        // Filter untuk admin
-        if (auth()->user()->role_id == 1) {
+        // Filter untuk admin dan direktur
+        if (auth()->user()->role_id == 1 || auth()->user()->role_id == 4) {
             if ($request->unit_id) {
                 $query->join('users as u', 'indikator_kinerja.dibuat_oleh', '=', 'u.user_id')
                       ->where('u.unit_id', $request->unit_id);

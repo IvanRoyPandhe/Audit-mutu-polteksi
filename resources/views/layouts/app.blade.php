@@ -103,6 +103,9 @@
                 @endif
                 @yield('content')
             </div>
+            <footer class="bg-white border-t border-gray-200 py-4 px-8 mt-auto">
+                <p class="text-center text-sm text-gray-600">Created by Teknologi Informasi © 2023</p>
+            </footer>
         </main>
     </div>
 </body>

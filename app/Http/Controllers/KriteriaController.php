@@ -15,12 +15,12 @@ class KriteriaController extends Controller
             ->leftJoin('users as penyetuju', 'kriteria.disetujui_oleh', '=', 'penyetuju.user_id')
             ->select('kriteria.*', 'standar_mutu.nama_standar', 'standar_mutu.kode_standar', 'pembuat.name as pembuat', 'penyetuju.name as penyetuju');
 
-        if (auth()->user()->role_id != 1) {
+        if (auth()->user()->role_id != 1 && auth()->user()->role_id != 4) {
             $query->where('kriteria.dibuat_oleh', auth()->id());
         }
 
-        // Filter untuk admin
-        if (auth()->user()->role_id == 1) {
+        // Filter untuk admin dan direktur
+        if (auth()->user()->role_id == 1 || auth()->user()->role_id == 4) {
             if ($request->unit_id) {
                 $query->join('users as u', 'kriteria.dibuat_oleh', '=', 'u.user_id')
                       ->where('u.unit_id', $request->unit_id);
