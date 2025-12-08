@@ -3,10 +3,10 @@
 @section('title', 'Indikator Kinerja')
 
 @section('content')
-<div class="mb-6 flex justify-between items-center">
-    <a href="/dashboard/indikator-kinerja/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">+ Tambah Indikator Kinerja</a>
+<div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <a href="/dashboard/indikator-kinerja/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto text-center">+ Tambah Indikator Kinerja</a>
     
-    <form method="GET" class="flex gap-2">
+    <form method="GET" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         @if(auth()->user()->role_id == 1)
         <select name="unit_id" class="px-4 py-2 border border-gray-300 rounded-lg">
             <option value="">Semua Unit</option>
@@ -32,7 +32,7 @@
     </form>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
+<div class="bg-white rounded-lg shadow overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
@@ -83,44 +83,65 @@
                     @endif
                 </td>
             </tr>
-            <tr id="indikator-{{ $item->indikator_id }}" class="hidden bg-gray-50">
+            <tr id="indikator-{{ $item->indikator_id }}" class="hidden bg-gradient-to-r from-purple-50 to-gray-50">
                 <td colspan="6" class="px-6 py-4">
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div><strong>Kriteria:</strong> {{ $item->kode_kriteria }} - {{ $item->nama_kriteria }}</div>
-                        <div><strong>Status:</strong> {{ $item->status }}</div>
-                        <div class="col-span-2">
-                            <strong>Target:</strong>
-                            @php
-                                $targets = json_decode($item->target, true);
-                            @endphp
-                            @if(is_array($targets))
-                                <ul class="list-disc list-inside mt-1">
-                                    @foreach($targets as $t)
-                                        <li>{{ $t }}</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                {{ $item->target }}
+                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                <div><strong class="text-gray-700">Kriteria:</strong><br>{{ $item->kode_kriteria }} - {{ $item->nama_kriteria }}</div>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                <div><strong class="text-gray-700">Status:</strong><br>
+                                    <span class="inline-block px-2 py-1 text-xs rounded-full mt-1
+                                        @if($item->status == 'Disetujui') bg-green-100 text-green-800
+                                        @elseif($item->status == 'Ditolak') bg-red-100 text-red-800
+                                        @else bg-yellow-100 text-yellow-800 @endif">
+                                        {{ $item->status }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-span-2 bg-blue-50 p-3 rounded-lg">
+                                <strong class="text-gray-700 flex items-center"><svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>Target:</strong>
+                                @php
+                                    $targets = json_decode($item->target, true);
+                                @endphp
+                                @if(is_array($targets))
+                                    <ul class="list-none mt-2 space-y-1">
+                                        @foreach($targets as $index => $t)
+                                            <li class="flex items-start"><span class="text-blue-600 font-bold mr-2">{{ $index + 1 }}.</span><span>{{ $t }}</span></li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p class="mt-1">{{ $item->target }}</p>
+                                @endif
+                            </div>
+                            @if($item->status == 'Ditolak')
+                            <div class="col-span-2 bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                                <strong class="text-red-700 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>Alasan Ditolak:</strong>
+                                <p class="text-red-600 text-sm mt-1 ml-7">
+                                    @if($item->keterangan && strpos($item->keterangan, 'Ditolak:') !== false)
+                                        {{ substr($item->keterangan, strpos($item->keterangan, 'Ditolak:') + 9) }}
+                                    @else
+                                        Data ini ditolak. Silakan edit dan ajukan kembali.
+                                    @endif
+                                </p>
+                            </div>
                             @endif
                         </div>
-                        <div><strong>Dibuat Oleh:</strong> {{ $item->pembuat }}</div>
-                        <div><strong>Tanggal Dibuat:</strong> {{ date('d/m/Y H:i', strtotime($item->tanggal_dibuat)) }}</div>
-                        @if($item->status == 'Ditolak')
-                        <div class="col-span-2 bg-red-50 p-3 rounded">
-                            <strong class="text-red-600">Alasan Ditolak:</strong>
-                            <p class="text-red-600 text-sm mt-1">
-                                @if($item->keterangan && strpos($item->keterangan, 'Ditolak:') !== false)
-                                    {{ substr($item->keterangan, strpos($item->keterangan, 'Ditolak:') + 9) }}
-                                @else
-                                    Data ini ditolak. Silakan edit dan ajukan kembali.
-                                @endif
-                            </p>
+                        <div class="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <div><strong class="text-gray-600">Dibuat:</strong> {{ $item->pembuat }} <span class="text-gray-400">•</span> {{ date('d/m/Y H:i', strtotime($item->tanggal_dibuat)) }}</div>
+                            </div>
+                            @if($item->penyetuju)
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <div><strong class="text-gray-600">Disetujui:</strong> {{ $item->penyetuju }} <span class="text-gray-400">•</span> {{ date('d/m/Y', strtotime($item->tanggal_disetujui)) }}</div>
+                            </div>
+                            @endif
                         </div>
-                        @endif
-                        @if($item->penyetuju)
-                        <div><strong>Disetujui Oleh:</strong> {{ $item->penyetuju }}</div>
-                        <div><strong>Tanggal Disetujui:</strong> {{ date('d/m/Y', strtotime($item->tanggal_disetujui)) }}</div>
-                        @endif
                     </div>
                 </td>
             </tr>

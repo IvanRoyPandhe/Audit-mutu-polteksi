@@ -8,7 +8,15 @@
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
-        <aside class="w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white">
+        <!-- Mobile Menu Button -->
+        <button id="menuToggle" class="fixed top-4 left-4 z-50 lg:hidden bg-blue-600 text-white p-2 rounded-lg shadow-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
             <div class="p-6">
                 <h1 class="text-2xl font-bold">IPASS</h1>
                 <p class="text-sm text-blue-100">Sistem Audit Mutu</p>
@@ -91,22 +99,41 @@
             </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto">
+        <!-- Overlay -->
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden hidden"></div>
+
+        <main class="flex-1 overflow-y-auto w-full">
             <header class="bg-white shadow-sm">
-                <div class="px-8 py-4">
+                <div class="px-4 sm:px-8 py-4">
                     <h2 class="text-2xl font-bold text-gray-800">@yield('title')</h2>
                 </div>
             </header>
-            <div class="p-8">
+            <div class="p-4 sm:p-8">
                 @if(session('success'))
                     <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">{{ session('success') }}</div>
                 @endif
                 @yield('content')
             </div>
-            <footer class="bg-white border-t border-gray-200 py-4 px-8 mt-auto">
+            <footer class="bg-white border-t border-gray-200 py-4 px-4 sm:px-8 mt-auto">
                 <p class="text-center text-sm text-gray-600">Created by Teknologi Informasi © 2023</p>
             </footer>
         </main>
     </div>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>

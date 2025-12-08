@@ -36,6 +36,12 @@
         </div>
 
         <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">PIC (Penanggung Jawab)</label>
+            <input type="text" name="pic" value="{{ $pelaksanaan->pic }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nama PIC">
+            @error('pic')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-2">Dokumen</label>
             <div id="dokumenContainer">
                 @php

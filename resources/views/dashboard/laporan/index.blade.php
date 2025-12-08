@@ -3,10 +3,10 @@
 @section('title', 'Laporan Audit')
 
 @section('content')
-<div class="mb-6 flex justify-between items-center">
+<div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <h2 class="text-xl font-semibold">Laporan Audit</h2>
     
-    <form method="GET" action="/dashboard/laporan/pdf" class="flex gap-2">
+    <form method="GET" action="/dashboard/laporan/pdf" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <select name="unit_id" class="px-4 py-2 border border-gray-300 rounded-lg">
             <option value="">Semua Unit</option>
             @foreach($units as $unit)
@@ -26,7 +26,7 @@
     </form>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
+<div class="bg-white rounded-lg shadow overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>

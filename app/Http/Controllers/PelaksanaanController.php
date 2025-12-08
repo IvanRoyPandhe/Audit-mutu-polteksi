@@ -81,6 +81,7 @@ class PelaksanaanController extends Controller
             'penetapan_id' => 'required|exists:penetapan,penetapan_id',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date',
+            'pic' => 'nullable|string|max:100',
             'dokumen_judul' => 'nullable|array',
             'dokumen_judul.*' => 'nullable|string',
             'dokumen_url' => 'nullable|array',
@@ -106,6 +107,7 @@ class PelaksanaanController extends Controller
             'penetapan_id' => $request->penetapan_id,
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
+            'pic' => $request->pic,
             'dokumen_link' => $dokumenLink,
             'keterangan' => $request->keterangan,
             'status' => 'Belum Dimulai',
@@ -144,6 +146,7 @@ class PelaksanaanController extends Controller
         $request->validate([
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date',
+            'pic' => 'nullable|string|max:100',
             'dokumen_judul' => 'nullable|array',
             'dokumen_judul.*' => 'nullable|string',
             'dokumen_url' => 'nullable|array',
@@ -169,6 +172,7 @@ class PelaksanaanController extends Controller
         DB::table('pelaksanaan')->where('pelaksanaan_id', $id)->update([
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
+            'pic' => $request->pic,
             'dokumen_link' => $dokumenLink,
             'keterangan' => $request->keterangan,
             'status' => $request->status,

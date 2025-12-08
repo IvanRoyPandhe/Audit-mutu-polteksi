@@ -3,7 +3,7 @@
 @section('title', 'Approval')
 
 @section('content')
-<div class="mb-6 flex gap-2">
+<div class="mb-6 flex flex-col sm:flex-row gap-2">
     <a href="/dashboard/approval" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Master Data</a>
     <a href="/dashboard/approval/penetapan" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Penetapan</a>
     <a href="/dashboard/approval/approved" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Sudah Disetujui</a>

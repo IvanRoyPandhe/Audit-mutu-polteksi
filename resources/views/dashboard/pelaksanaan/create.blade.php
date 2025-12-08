@@ -27,6 +27,11 @@
         </div>
 
         <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">PIC (Penanggung Jawab)</label>
+            <input type="text" name="pic" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nama PIC">
+        </div>
+
+        <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-2">Dokumen</label>
             <div id="dokumenContainer">
                 <div class="grid grid-cols-2 gap-2 mb-2">
