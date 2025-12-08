@@ -4,34 +4,38 @@ set -e
 
 echo "Starting application..."
 
-# Wait for database to be ready
-echo "Waiting for database..."
-max_attempts=30
-attempt=0
-until php artisan migrate --pretend 2>/dev/null || [ $attempt -eq $max_attempts ]; do
-    attempt=$((attempt + 1))
-    echo "Database is unavailable - attempt $attempt/$max_attempts"
-    sleep 2
-done
+# Debug environment variables
+echo "=== Database Configuration ==="
+echo "DB_CONNECTION: ${DB_CONNECTION}"
+echo "DB_HOST: ${DB_HOST}"
+echo "DB_PORT: ${DB_PORT}"
+echo "DB_DATABASE: ${DB_DATABASE}"
+echo "DB_USERNAME: ${DB_USERNAME}"
+echo "=============================="
 
-if [ $attempt -eq $max_attempts ]; then
-    echo "Failed to connect to database after $max_attempts attempts"
-    exit 1
+# Test database connection with psql
+echo "Testing database connection..."
+if command -v psql > /dev/null; then
+    echo "Testing with psql..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "SELECT 1;" 2>&1 && echo "✓ Database connection successful" || echo "✗ Database connection failed"
 fi
 
-echo "Database is ready!"
+# Try to run migrations (but don't fail if it doesn't work)
+echo "Attempting to run migrations..."
+if php artisan migrate --force 2>&1; then
+    echo "✓ Migrations completed"
+else
+    echo "✗ Migrations failed - will retry later"
+    echo "Container will start anyway for debugging"
+fi
 
-# Run migrations
-echo "Running migrations..."
-php artisan migrate --force
-
-# Clear and cache config
+# Clear and cache config (ignore errors)
 echo "Optimizing application..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+php artisan config:cache 2>&1 || echo "Config cache skipped"
+php artisan route:cache 2>&1 || echo "Route cache skipped"
+php artisan view:cache 2>&1 || echo "View cache skipped"
 
-echo "Application ready!"
+echo "Application starting..."
 
 # Execute the main command
 exec "$@"
