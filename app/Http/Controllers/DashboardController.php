@@ -22,6 +22,21 @@ class DashboardController extends Controller
                     ->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
                     ->where('pelaksanaan.dibuat_oleh', $userId)
                     ->count(),
+                'audit_mayor' => DB::table('audit')
+                    ->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                    ->where('pelaksanaan.dibuat_oleh', $userId)
+                    ->where('audit.hasil_audit', 'Mayor')
+                    ->count(),
+                'audit_minor' => DB::table('audit')
+                    ->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                    ->where('pelaksanaan.dibuat_oleh', $userId)
+                    ->where('audit.hasil_audit', 'Minor')
+                    ->count(),
+                'audit_observasi' => DB::table('audit')
+                    ->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                    ->where('pelaksanaan.dibuat_oleh', $userId)
+                    ->where('audit.hasil_audit', 'Observasi')
+                    ->count(),
             ];
 
             // Chart data untuk unit kerja
@@ -77,6 +92,30 @@ class DashboardController extends Controller
                           ->where('users.unit_id', $request->unit_id);
                     })
                     ->count(),
+                'audit_mayor' => DB::table('audit')
+                    ->when($request->unit_id, function($q) use ($request) {
+                        $q->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                          ->join('users', 'pelaksanaan.dibuat_oleh', '=', 'users.user_id')
+                          ->where('users.unit_id', $request->unit_id);
+                    })
+                    ->where('audit.hasil_audit', 'Mayor')
+                    ->count(),
+                'audit_minor' => DB::table('audit')
+                    ->when($request->unit_id, function($q) use ($request) {
+                        $q->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                          ->join('users', 'pelaksanaan.dibuat_oleh', '=', 'users.user_id')
+                          ->where('users.unit_id', $request->unit_id);
+                    })
+                    ->where('audit.hasil_audit', 'Minor')
+                    ->count(),
+                'audit_observasi' => DB::table('audit')
+                    ->when($request->unit_id, function($q) use ($request) {
+                        $q->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                          ->join('users', 'pelaksanaan.dibuat_oleh', '=', 'users.user_id')
+                          ->where('users.unit_id', $request->unit_id);
+                    })
+                    ->where('audit.hasil_audit', 'Observasi')
+                    ->count(),
             ];
 
             // Chart data
@@ -106,6 +145,15 @@ class DashboardController extends Controller
                     ->select(DB::raw('EXTRACT(MONTH FROM pelaksanaan.tanggal_mulai) as bulan'), DB::raw('count(*) as total'))
                     ->groupBy(DB::raw('EXTRACT(MONTH FROM pelaksanaan.tanggal_mulai)'))
                     ->orderBy('bulan')
+                    ->get(),
+                'hasil_audit' => DB::table('audit')
+                    ->when($request->unit_id, function($q) use ($request) {
+                        $q->join('pelaksanaan', 'audit.pelaksanaan_id', '=', 'pelaksanaan.pelaksanaan_id')
+                          ->join('users', 'pelaksanaan.dibuat_oleh', '=', 'users.user_id')
+                          ->where('users.unit_id', $request->unit_id);
+                    })
+                    ->select('hasil_audit', DB::raw('count(*) as total'))
+                    ->groupBy('hasil_audit')
                     ->get(),
                 'per_unit' => DB::table('penetapan')
                     ->join('users', 'penetapan.dibuat_oleh', '=', 'users.user_id')

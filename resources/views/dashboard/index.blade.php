@@ -153,6 +153,54 @@
     </div>
 </div>
 
+<!-- Audit Results Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Temuan Mayor -->
+    <div class="stat-card bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-2xl shadow-xl p-6 text-white overflow-hidden relative animate-fade-in-up" style="animation-delay: 0.6s;">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                </div>
+            </div>
+            <p class="text-red-100 text-sm font-semibold mb-2 uppercase tracking-wide">Temuan Mayor</p>
+            <p class="text-5xl font-extrabold mb-1">{{ $stats['audit_mayor'] }}</p>
+            <p class="text-red-200 text-xs">Memerlukan tindakan segera</p>
+        </div>
+    </div>
+
+    <!-- Temuan Minor -->
+    <div class="stat-card bg-gradient-to-br from-yellow-500 via-yellow-600 to-orange-600 rounded-2xl shadow-xl p-6 text-white overflow-hidden relative animate-fade-in-up" style="animation-delay: 0.7s;">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                </div>
+            </div>
+            <p class="text-yellow-100 text-sm font-semibold mb-2 uppercase tracking-wide">Temuan Minor</p>
+            <p class="text-5xl font-extrabold mb-1">{{ $stats['audit_minor'] }}</p>
+            <p class="text-yellow-200 text-xs">Perlu perbaikan</p>
+        </div>
+    </div>
+
+    <!-- Observasi -->
+    <div class="stat-card bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-xl p-6 text-white overflow-hidden relative animate-fade-in-up" style="animation-delay: 0.8s;">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+                </div>
+            </div>
+            <p class="text-blue-100 text-sm font-semibold mb-2 uppercase tracking-wide">Observasi</p>
+            <p class="text-5xl font-extrabold mb-1">{{ $stats['audit_observasi'] }}</p>
+            <p class="text-blue-200 text-xs">Catatan pengamatan</p>
+        </div>
+    </div>
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Pelaksanaan Per Bulan -->
     <div class="bg-white rounded-2xl lg:col-span-2 shadow-xl p-6 border border-gray-100 animate-fade-in-up" style="animation-delay: 0.6s;">

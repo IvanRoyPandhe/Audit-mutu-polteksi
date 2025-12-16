@@ -16,6 +16,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StandarMutuController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UnitAuditorController;
+use App\Http\Controllers\BukuKebijakanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -93,6 +94,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::get('/evaluasi', [EvaluasiController::class, 'index']);
         Route::get('/evaluasi/create', [EvaluasiController::class, 'create']);
         Route::post('/evaluasi', [EvaluasiController::class, 'store']);
+        Route::get('/evaluasi/{id}', [EvaluasiController::class, 'show']);
         Route::get('/evaluasi/{id}/edit', [EvaluasiController::class, 'edit']);
         Route::put('/evaluasi/{id}', [EvaluasiController::class, 'update']);
         Route::delete('/evaluasi/{id}', [EvaluasiController::class, 'destroy']);
@@ -135,6 +137,16 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::get('/unit-auditors', [UnitAuditorController::class, 'index']);
         Route::post('/unit-auditors', [UnitAuditorController::class, 'store']);
         Route::delete('/unit-auditors/{id}', [UnitAuditorController::class, 'destroy']);
+    });
+    Route::middleware('permission:buku-kebijakan')->group(function () {
+        Route::get('/kebijakan', [BukuKebijakanController::class, 'kebijakan']);
+        Route::get('/manual', [BukuKebijakanController::class, 'manual']);
+        Route::get('/formulir', [BukuKebijakanController::class, 'formulir']);
+        Route::get('/buku-kebijakan/create/{tipe}', [BukuKebijakanController::class, 'create']);
+        Route::post('/buku-kebijakan', [BukuKebijakanController::class, 'store']);
+        Route::get('/buku-kebijakan/{id}/edit', [BukuKebijakanController::class, 'edit']);
+        Route::put('/buku-kebijakan/{id}', [BukuKebijakanController::class, 'update']);
+        Route::delete('/buku-kebijakan/{id}', [BukuKebijakanController::class, 'destroy']);
     });
     Route::post('/logout', [AuthController::class, 'logout']);
 });

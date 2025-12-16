@@ -27,4 +27,14 @@ class User extends Authenticatable
     {
         return $this->password_hash;
     }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id', 'unit_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
 }

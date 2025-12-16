@@ -26,6 +26,7 @@ class RoleController extends Controller
             'evaluasi' => 'Evaluasi',
             'approval' => 'Approval',
             'laporan' => 'Laporan',
+            'buku-kebijakan' => 'Buku Kebijakan',
             'users' => 'Users',
             'roles' => 'Roles',
             'units' => 'Units',

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - IPASS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')
 </head>
 <body class="bg-gray-100">
@@ -108,6 +109,23 @@
                     <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z"/><path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
                     Laporan
                 </a>
+                @endif
+
+                @if($isAdmin || in_array('buku-kebijakan', $permissions))
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-6 py-3 hover:bg-white/10 text-left">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+                            Buku Kebijakan
+                        </div>
+                        <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                    </button>
+                    <div x-show="open" x-transition class="bg-white/10 backdrop-blur-sm border-l-2 border-white/20">
+                        <a href="/dashboard/kebijakan" class="block px-12 py-2 hover:bg-white/10 text-sm transition-colors">Kebijakan</a>
+                        <a href="/dashboard/manual" class="block px-12 py-2 hover:bg-white/10 text-sm transition-colors">Manual</a>
+                        <a href="/dashboard/formulir" class="block px-12 py-2 hover:bg-white/10 text-sm transition-colors">Formulir</a>
+                    </div>
+                </div>
                 @endif
 
                 @if($isAdmin || in_array('users', $permissions) || in_array('roles', $permissions) || in_array('units', $permissions) || in_array('unit-auditors', $permissions))

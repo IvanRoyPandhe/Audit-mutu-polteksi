@@ -3,8 +3,26 @@
 @section('title', 'Evaluasi & Audit')
 
 @section('content')
+@if(auth()->user()->role_id != 1)
+<div class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+    <div class="flex items-center">
+        <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+        <div>
+            <h3 class="text-lg font-semibold text-blue-800">Hasil Audit {{ $unitName ? 'Unit ' . $unitName : 'Unit Kerja Anda' }}</h3>
+            <p class="text-blue-600 text-sm">Berikut adalah hasil audit untuk unit kerja Anda</p>
+        </div>
+    </div>
+</div>
+@endif
+
 <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    @if(in_array(auth()->user()->role_id, [1, 2]))
     <a href="/dashboard/evaluasi/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto text-center">+ Tambah Evaluasi</a>
+    @else
+    <div></div>
+    @endif
     
     <form method="GET" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg">
@@ -30,6 +48,9 @@
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kriteria</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Indikator</th>
+                @if(auth()->user()->role_id == 1)
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit</th>
+                @endif
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tahun</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Audit</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Evaluasi</th>
@@ -42,6 +63,9 @@
             <tr>
                 <td class="px-6 py-4 text-sm">{{ Str::limit($item->nama_kriteria, 30) }}</td>
                 <td class="px-6 py-4 text-sm">{{ Str::limit($item->nama_indikator, 40) }}</td>
+                @if(auth()->user()->role_id == 1)
+                <td class="px-6 py-4 text-sm">{{ $item->nama_unit }}</td>
+                @endif
                 <td class="px-6 py-4 text-sm">{{ $item->tahun }}</td>
                 <td class="px-6 py-4 text-sm">{{ date('d/m/Y', strtotime($item->tanggal_audit)) }}</td>
                 <td class="px-6 py-4 text-sm">
@@ -57,17 +81,20 @@
                 </td>
                 <td class="px-6 py-4 text-sm">{{ $item->auditor }}</td>
                 <td class="px-6 py-4 text-sm">
-                    <button onclick="toggleDetail('audit-{{ $item->audit_id }}')" class="text-blue-600 hover:text-blue-800 mr-3">Detail</button>
+                    <a href="/dashboard/evaluasi/{{ $item->audit_id }}" class="text-blue-600 hover:text-blue-800 mr-3">Lihat Detail</a>
+                    <button onclick="toggleDetail('audit-{{ $item->audit_id }}')" class="text-green-600 hover:text-green-800 mr-3">Quick View</button>
+                    @if(auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
                     <a href="/dashboard/evaluasi/{{ $item->audit_id }}/edit" class="text-yellow-600 hover:text-yellow-800 mr-3">Edit</a>
                     <form method="POST" action="/dashboard/evaluasi/{{ $item->audit_id }}" class="inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-red-600 hover:text-red-800" onclick="return confirm('Yakin hapus?')">Hapus</button>
                     </form>
+                    @endif
                 </td>
             </tr>
             <tr id="audit-{{ $item->audit_id }}" class="hidden bg-gradient-to-r from-orange-50 to-gray-50">
-                <td colspan="7" class="px-6 py-4">
+                <td colspan="{{ auth()->user()->role_id == 1 ? '8' : '7' }}" class="px-6 py-4">
                     <div class="bg-white rounded-lg p-4 shadow-sm">
                         <div class="grid grid-cols-2 gap-4 text-sm">
                             <div class="flex items-start">
@@ -130,7 +157,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
+                <td colspan="{{ auth()->user()->role_id == 1 ? '8' : '7' }}" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>
