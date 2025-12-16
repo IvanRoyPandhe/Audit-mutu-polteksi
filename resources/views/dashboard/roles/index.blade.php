@@ -22,6 +22,7 @@
                 <td class="px-6 py-4 text-sm font-medium">{{ $role->role_name }}</td>
                 <td class="px-6 py-4 text-sm">{{ $role->description }}</td>
                 <td class="px-6 py-4 text-sm">
+                    <a href="/dashboard/roles/{{ $role->role_id }}/edit" class="text-blue-600 hover:text-blue-800 mr-3">Edit Permissions</a>
                     <form method="POST" action="/dashboard/roles/{{ $role->role_id }}" class="inline">
                         @csrf
                         @method('DELETE')

@@ -36,12 +36,12 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
-                Selamat Datang, <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{{ auth()->user()->name }}</span>! 👋
+                Selamat Datang, <span class="bg-gradient-to-r from-blue-600 to-red-700 bg-clip-text text-transparent">{{ auth()->user()->name }}</span>! 👋
             </h1>
             <p class="text-gray-600 text-lg">Sistem Informasi Audit Penjaminan Mutu Akademik</p>
         </div>
         <div class="hidden md:block">
-            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl shadow-lg">
+            <div class="bg-gradient-to-r from-blue-600 to-red-700 text-white px-6 py-3 rounded-xl shadow-lg">
                 <div class="text-sm font-medium">{{ now()->isoFormat('dddd, D MMMM Y') }}</div>
             </div>
         </div>
@@ -51,7 +51,7 @@
 @if(auth()->user()->role_id != 3)
 <div class="mb-8 bg-white rounded-2xl shadow-xl p-6 border border-gray-100 animate-fade-in-up" style="animation-delay: 0.1s;">
     <div class="flex items-center mb-4">
-        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-700 rounded-xl flex items-center justify-center mr-3">
             <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/></svg>
         </div>
         <h3 class="text-lg font-bold text-gray-800">Filter Data</h3>
@@ -75,7 +75,7 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-2.5 rounded-xl hover:from-blue-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl font-medium">
+        <button type="submit" class="bg-gradient-to-r from-blue-600 to-red-700 text-white px-8 py-2.5 rounded-xl hover:from-blue-700 hover:to-red-800 transition shadow-lg hover:shadow-xl font-medium">
             Terapkan Filter
         </button>
         @if(request('unit_id') || request('tahun'))
@@ -158,7 +158,7 @@
     <div class="bg-white rounded-2xl lg:col-span-2 shadow-xl p-6 border border-gray-100 animate-fade-in-up" style="animation-delay: 0.6s;">
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center">
-                <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-red-700 rounded-xl flex items-center justify-center mr-3 shadow-lg">
                     <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                 </div>
                 <div>
@@ -178,7 +178,7 @@
     <!-- Evaluasi Kesesuaian -->
     <div class="bg-white lg:col-span-1 rounded-2xl shadow-xl p-6 border border-gray-100 animate-fade-in-up" style="animation-delay: 0.7s;">
         <div class="flex items-center mb-6">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-red-700 rounded-xl flex items-center justify-center mr-3 shadow-lg">
                 <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"/></svg>
             </div>
             <div>
@@ -204,7 +204,7 @@
 <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 animate-fade-in-up" style="animation-delay: 0.8s;">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-red-700 rounded-xl flex items-center justify-center mr-3 shadow-lg">
                 <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
             </div>
             <div>

@@ -61,14 +61,20 @@ class PenetapanController extends Controller
 
     public function create()
     {
+        // Debug: Check all criteria first
+        $allKriteria = DB::table('kriteria')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->select('kriteria.*', 'users.unit_id', 'users.name')
+            ->get();
+        
+        // Get criteria from same unit with indikator
         $kriteria = DB::table('kriteria')
-            ->join('indikator_kinerja', 'kriteria.kriteria_id', '=', 'indikator_kinerja.kriteria_id')
-            ->where('kriteria.status', 'Disetujui')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->where('users.unit_id', auth()->user()->unit_id)
             ->select('kriteria.*')
-            ->distinct()
             ->get();
 
-        return view('dashboard.penetapan.create', compact('kriteria'));
+        return view('dashboard.penetapan.create', compact('kriteria', 'allKriteria'));
     }
 
     public function store(Request $request)
@@ -79,7 +85,21 @@ class PenetapanController extends Controller
             'target_capaian' => 'required|array',
             'target_capaian.*' => 'required|string',
             'anggaran' => 'nullable|numeric',
+            'pic' => 'nullable|string|max:100',
+            'tanggal_rencana_mulai' => 'nullable|date',
+            'tanggal_rencana_selesai' => 'nullable|date',
         ]);
+
+        // Validate that the selected criteria belongs to the same unit
+        $kriteria = DB::table('kriteria')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->where('kriteria.kriteria_id', $request->kriteria_id)
+            ->where('users.unit_id', auth()->user()->unit_id)
+            ->first();
+
+        if (!$kriteria) {
+            return redirect()->back()->with('error', 'Anda hanya bisa memilih kriteria dari unit Anda sendiri');
+        }
 
         $targetCapaian = json_encode($request->target_capaian);
 
@@ -94,6 +114,9 @@ class PenetapanController extends Controller
                 'tahun' => $request->tahun,
                 'target_capaian' => $targetCapaian,
                 'anggaran' => $request->anggaran,
+                'pic' => $request->pic,
+                'tanggal_rencana_mulai' => $request->tanggal_rencana_mulai,
+                'tanggal_rencana_selesai' => $request->tanggal_rencana_selesai,
                 'dibuat_oleh' => auth()->id(),
                 'tanggal_dibuat' => now(),
                 'status' => 'Draft',
@@ -144,12 +167,18 @@ class PenetapanController extends Controller
             'target_capaian' => 'required|array',
             'target_capaian.*' => 'required|string',
             'anggaran' => 'nullable|numeric',
+            'pic' => 'nullable|string|max:100',
+            'tanggal_rencana_mulai' => 'nullable|date',
+            'tanggal_rencana_selesai' => 'nullable|date',
         ]);
 
         DB::table('penetapan')->where('penetapan_id', $id)->update([
             'tahun' => $request->tahun,
             'target_capaian' => json_encode($request->target_capaian),
             'anggaran' => $request->anggaran,
+            'pic' => $request->pic,
+            'tanggal_rencana_mulai' => $request->tanggal_rencana_mulai,
+            'tanggal_rencana_selesai' => $request->tanggal_rencana_selesai,
         ]);
 
         return redirect('/dashboard/penetapan')->with('success', 'Penetapan berhasil diupdate');

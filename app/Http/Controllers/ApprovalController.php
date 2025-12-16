@@ -89,6 +89,18 @@ class ApprovalController extends Controller
                 'disetujui_oleh' => auth()->id(),
                 'tanggal_disetujui' => now(),
             ]);
+            
+            // Auto-create pelaksanaan when penetapan is approved
+            $penetapan = DB::table('penetapan')->where('penetapan_id', $id)->first();
+            DB::table('pelaksanaan')->insert([
+                'penetapan_id' => $penetapan->penetapan_id,
+                'tanggal_mulai' => $penetapan->tanggal_rencana_mulai ?: now()->addDays(7),
+                'tanggal_selesai' => $penetapan->tanggal_rencana_selesai ?: now()->addDays(30),
+                'pic' => $penetapan->pic,
+                'status' => 'Belum Dimulai',
+                'dibuat_oleh' => $penetapan->dibuat_oleh,
+                'tanggal_dibuat' => now(),
+            ]);
         }
 
         return redirect()->back()->with('success', 'Berhasil disetujui');

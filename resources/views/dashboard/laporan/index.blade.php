@@ -36,6 +36,7 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tahun</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Audit</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Evaluasi</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hasil Audit</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Auditor</th>
             </tr>
         </thead>
@@ -58,11 +59,22 @@
                     <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">{{ $item->evaluasi_kesesuaian }}</span>
                     @endif
                 </td>
+                <td class="px-6 py-4 text-sm">
+                    @if($item->hasil_audit == 'Tidak Ada')
+                    <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ $item->hasil_audit }}</span>
+                    @elseif($item->hasil_audit == 'Minor')
+                    <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">{{ $item->hasil_audit }}</span>
+                    @elseif($item->hasil_audit == 'Mayor')
+                    <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">{{ $item->hasil_audit }}</span>
+                    @elseif($item->hasil_audit == 'Observasi')
+                    <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ $item->hasil_audit }}</span>
+                    @endif
+                </td>
                 <td class="px-6 py-4 text-sm">{{ $item->auditor }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
+                <td colspan="8" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>

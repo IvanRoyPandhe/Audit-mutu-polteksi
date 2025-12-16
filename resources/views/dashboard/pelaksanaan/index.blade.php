@@ -4,12 +4,10 @@
 
 @section('content')
 <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    @if(auth()->user()->role_id == 3)
-    <a href="/dashboard/pelaksanaan/create" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto text-center">+ Tambah Pelaksanaan</a>
-    @elseif(auth()->user()->role_id == 2)
+    @if(auth()->user()->role_id == 2)
     <div class="text-sm text-gray-600">Menampilkan pelaksanaan yang sudah selesai</div>
     @else
-    <div></div>
+    <div class="text-sm text-gray-600">Pelaksanaan otomatis dibuat saat penetapan disetujui</div>
     @endif
     
     <form method="GET" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -38,157 +36,211 @@
     </form>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kriteria</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Indikator</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tahun</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                @if(auth()->user()->role_id == 1 || auth()->user()->role_id == 4)
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit</th>
-                @endif
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            @forelse($pelaksanaan as $item)
-            <tr>
-                <td class="px-6 py-4 text-sm">{{ Str::limit($item->nama_kriteria, 30) }}</td>
-                <td class="px-6 py-4 text-sm">{{ Str::limit($item->nama_indikator, 40) }}</td>
-                <td class="px-6 py-4 text-sm">{{ $item->tahun }}</td>
-                <td class="px-6 py-4 text-sm">{{ date('d/m/Y', strtotime($item->tanggal_mulai)) }} - {{ $item->tanggal_selesai ? date('d/m/Y', strtotime($item->tanggal_selesai)) : '-' }}</td>
-                <td class="px-6 py-4 text-sm">
-                    @if($item->status == 'Belum Dimulai')
-                    <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ $item->status }}</span>
-                    @elseif($item->status == 'Sedang Berjalan')
-                    <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ $item->status }}</span>
-                    @else
-                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{{ $item->status }}</span>
-                    @endif
-                </td>
-                @if(auth()->user()->role_id == 1 || auth()->user()->role_id == 4)
-                <td class="px-6 py-4 text-sm">{{ $item->nama_unit }}</td>
-                @endif
-                <td class="px-6 py-4 text-sm">
-                    <button onclick="toggleDetail('pelaksanaan-{{ $item->pelaksanaan_id }}')" class="text-blue-600 hover:text-blue-800 mr-3">Detail</button>
-                    @if($item->dibuat_oleh == auth()->id() && auth()->user()->role_id != 2)
-                    <a href="/dashboard/pelaksanaan/{{ $item->pelaksanaan_id }}/edit" class="text-yellow-600 hover:text-yellow-800 mr-3">Edit</a>
-                    <form method="POST" action="/dashboard/pelaksanaan/{{ $item->pelaksanaan_id }}" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-800" onclick="return confirm('Yakin hapus?')">Hapus</button>
-                    </form>
-                    @endif
-                </td>
-            </tr>
-            <tr id="pelaksanaan-{{ $item->pelaksanaan_id }}" class="hidden bg-gradient-to-r from-green-50 to-gray-50">
-                <td colspan="{{ auth()->user()->role_id == 1 || auth()->user()->role_id == 4 ? '7' : '6' }}" class="px-6 py-4">
-                    <div class="bg-white rounded-lg p-4 shadow-sm">
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="flex items-start">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                                <div><strong class="text-gray-700">Kriteria:</strong><br>{{ $item->nama_kriteria }}</div>
+@if(auth()->user()->role_id == 1)
+<div class="mb-4">
+    <a href="/dashboard/unit-auditors" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Kelola Auditor Unit</a>
+</div>
+@endif
+
+@forelse($pelaksanaan as $unitName => $items)
+<div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-800 bg-blue-50 px-4 py-2 rounded-lg">{{ $unitName }}</h3>
+        @if(auth()->user()->role_id == 1)
+        <div class="text-sm text-gray-600">
+            Auditor: 
+            @php
+                $unitAuditors = DB::table('unit_auditors')
+                    ->join('users', 'unit_auditors.auditor_id', '=', 'users.user_id')
+                    ->join('unit', 'unit_auditors.unit_id', '=', 'unit.unit_id')
+                    ->where('unit.nama_unit', $unitName)
+                    ->pluck('users.name');
+            @endphp
+            @if($unitAuditors->count() > 0)
+                {{ $unitAuditors->implode(', ') }}
+            @else
+                <span class="text-red-500">Belum ada auditor</span>
+            @endif
+        </div>
+        @endif
+    </div>
+    <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kriteria & Indikator</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tahun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periode</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Auditor & Evaluasi</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @foreach($items as $item)
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">
+                        <div class="text-sm font-medium text-gray-900">{{ Str::limit($item->nama_kriteria, 25) }}</div>
+                        <div class="text-xs text-gray-500">{{ Str::limit($item->nama_indikator, 30) }}</div>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-900">{{ $item->tahun }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">
+                        <div>{{ date('d/m/Y', strtotime($item->tanggal_mulai)) }}</div>
+                        <div class="text-xs text-gray-500">s/d {{ $item->tanggal_selesai ? date('d/m/Y', strtotime($item->tanggal_selesai)) : '-' }}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        @if($item->status == 'Belum Dimulai')
+                        <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ $item->status }}</span>
+                        @elseif($item->status == 'Sedang Berjalan')
+                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ $item->status }}</span>
+                        @else
+                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{{ $item->status }}</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3">
+                        @php
+                            $unitId = DB::table('users')->where('user_id', $item->dibuat_oleh)->value('unit_id');
+                            $unitAuditors = DB::table('unit_auditors')
+                                ->join('users', 'unit_auditors.auditor_id', '=', 'users.user_id')
+                                ->where('unit_auditors.unit_id', $unitId)
+                                ->select('users.name', 'users.user_id')
+                                ->get();
+                            $totalAuditors = $unitAuditors->count();
+                            $completedAudits = DB::table('audit')
+                                ->whereIn('auditor_id', $unitAuditors->pluck('user_id'))
+                                ->where('pelaksanaan_id', $item->pelaksanaan_id)
+                                ->count();
+                            $hasEvaluation = $completedAudits > 0;
+                            $allAuditorsCompleted = $completedAudits >= $totalAuditors;
+                        @endphp
+                        @if($unitAuditors->count() > 0)
+                            <div class="space-y-1">
+                                @foreach($unitAuditors as $auditor)
+                                <div class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-700">{{ $auditor->name }}</div>
+                                @endforeach
                             </div>
-                            <div class="flex items-start">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                <div><strong class="text-gray-700">Tahun:</strong><br>{{ $item->tahun }}</div>
-                            </div>
-                            <div class="col-span-2 flex items-start">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                                <div class="flex-1"><strong class="text-gray-700">Indikator:</strong><br>{{ $item->nama_indikator }}</div>
-                            </div>
-                            <div class="col-span-2 bg-blue-50 p-3 rounded-lg">
-                                <strong class="text-gray-700 flex items-center"><svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>Target Capaian:</strong>
-                                @php
-                                    $targets = json_decode($item->target_capaian, true);
-                                @endphp
-                                @if(is_array($targets))
-                                    <ul class="list-none mt-2 space-y-1">
-                                        @foreach($targets as $index => $t)
-                                            <li class="flex items-start"><span class="text-blue-600 font-bold mr-2">{{ $index + 1 }}.</span><span>{{ $t }}</span></li>
-                                        @endforeach
-                                    </ul>
+                            @if($item->status == 'Selesai')
+                                @if(!$hasEvaluation)
+                                <a href="/dashboard/evaluasi/create?pelaksanaan_id={{ $item->pelaksanaan_id }}" class="text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 mt-1 inline-block">+ Evaluasi</a>
+                                @elseif($allAuditorsCompleted)
+                                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded mt-1 inline-block">✓ Semua auditor selesai</span>
                                 @else
-                                    <p class="mt-1">{{ $item->target_capaian }}</p>
+                                <div class="mt-1">
+                                    <a href="/dashboard/evaluasi/create?pelaksanaan_id={{ $item->pelaksanaan_id }}" class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 inline-block">+ Evaluasi</a>
+                                    <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded inline-block">{{ $completedAudits }}/{{ $totalAuditors }} selesai</span>
+                                </div>
                                 @endif
-                            </div>
-                            <div class="flex items-start">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                <div><strong class="text-gray-700">Tanggal Mulai:</strong><br>{{ date('d/m/Y', strtotime($item->tanggal_mulai)) }}</div>
-                            </div>
-                            <div class="flex items-start">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <div><strong class="text-gray-700">Tanggal Selesai:</strong><br>{{ $item->tanggal_selesai ? date('d/m/Y', strtotime($item->tanggal_selesai)) : '-' }}</div>
-                            </div>
-                            @if($item->pic)
-                            <div class="col-span-2 flex items-start bg-yellow-50 p-3 rounded-lg">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                <div><strong class="text-gray-700">PIC (Penanggung Jawab):</strong><br>{{ $item->pic }}</div>
-                            </div>
                             @endif
-                            @if($item->dokumen_link)
-                            <div class="col-span-2 bg-purple-50 p-3 rounded-lg">
-                                <strong class="text-gray-700 flex items-center"><svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>Dokumen:</strong>
-                                @php
-                                    $dokumen = json_decode($item->dokumen_link, true);
-                                @endphp
-                                @if(is_array($dokumen))
-                                    <ul class="list-none mt-2 space-y-1">
-                                        @foreach($dokumen as $index => $dok)
-                                            <li class="flex items-start"><svg class="w-4 h-4 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><a href="{{ $dok['url'] }}" target="_blank" class="text-blue-600 hover:underline">{{ $dok['judul'] }}</a></li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <a href="{{ $item->dokumen_link }}" target="_blank" class="text-blue-600 hover:underline">{{ $item->dokumen_link }}</a>
-                                @endif
-                            </div>
-                            @endif
-                            @if($item->keterangan)
-                            <div class="col-span-2 flex items-start">
-                                <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                                <div class="flex-1"><strong class="text-gray-700">Keterangan:</strong><br>{{ $item->keterangan }}</div>
-                            </div>
+                        @else
+                            <span class="text-xs text-red-500">Belum ada auditor</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-col gap-1">
+                            <button onclick="toggleDetail('pelaksanaan-{{ $item->pelaksanaan_id }}')" class="text-blue-600 hover:text-blue-800 text-xs">Detail</button>
+                            @if($item->dibuat_oleh == auth()->id() && auth()->user()->role_id != 2)
+                            <a href="/dashboard/pelaksanaan/{{ $item->pelaksanaan_id }}/edit" class="text-yellow-600 hover:text-yellow-800 text-xs">Edit</a>
                             @endif
                         </div>
-                        <div class="mt-4 pt-4 border-t border-gray-200 grid grid-cols-3 gap-4 text-sm">
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <div><strong class="text-gray-600">Status:</strong> 
-                                    <span class="inline-block px-2 py-0.5 text-xs rounded-full
-                                        @if($item->status == 'Selesai') bg-green-100 text-green-800
-                                        @elseif($item->status == 'Sedang Berjalan') bg-blue-100 text-blue-800
-                                        @else bg-gray-100 text-gray-800 @endif">
-                                        {{ $item->status }}
-                                    </span>
+                    </td>
+                </tr>
+                <tr id="pelaksanaan-{{ $item->pelaksanaan_id }}" class="hidden bg-gray-50">
+                    <td colspan="6" class="px-4 py-4">
+                        <div class="bg-white rounded p-4 text-sm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-3">
+                                    <div class="bg-blue-50 p-3 rounded">
+                                        <strong class="text-blue-800">Kriteria:</strong>
+                                        <div class="text-blue-700">{{ $item->nama_kriteria }}</div>
+                                    </div>
+                                    <div class="bg-green-50 p-3 rounded">
+                                        <strong class="text-green-800">Indikator:</strong>
+                                        <div class="text-green-700">{{ $item->nama_indikator }}</div>
+                                    </div>
+                                    <div class="bg-purple-50 p-3 rounded">
+                                        <strong class="text-purple-800">Target Capaian:</strong>
+                                        @php $targets = json_decode($item->target_capaian, true); @endphp
+                                        @if(is_array($targets))
+                                            <ul class="list-disc list-inside text-purple-700 mt-1">
+                                                @foreach($targets as $t)
+                                                <li>{{ $t }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <div class="text-purple-700">{{ $item->target_capaian }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="bg-yellow-50 p-3 rounded">
+                                        <strong class="text-yellow-800">Periode Pelaksanaan:</strong>
+                                        <div class="text-yellow-700">
+                                            {{ date('d/m/Y', strtotime($item->tanggal_mulai)) }} - 
+                                            {{ $item->tanggal_selesai ? date('d/m/Y', strtotime($item->tanggal_selesai)) : 'Belum ditentukan' }}
+                                        </div>
+                                    </div>
+                                    <div class="bg-green-50 p-3 rounded">
+                                        <strong class="text-green-800">Tanggal Realisasi:</strong>
+                                        <div class="text-green-700">{{ $item->tanggal_realisasi ? date('d/m/Y', strtotime($item->tanggal_realisasi)) : 'Belum direalisasi' }}</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-3 rounded">
+                                        <strong class="text-gray-800">Anggaran:</strong>
+                                        <div class="text-gray-700">Rp {{ number_format($item->anggaran ?? 0, 0, ',', '.') }}</div>
+                                    </div>
+                                    @if($item->pic)
+                                    <div class="bg-indigo-50 p-3 rounded">
+                                        <strong class="text-indigo-800">PIC:</strong>
+                                        <div class="text-indigo-700">{{ $item->pic }}</div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                <div><strong class="text-gray-600">Dibuat:</strong> {{ $item->pembuat }}</div>
+                            <div class="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-orange-50 p-3 rounded">
+                                    <strong class="text-orange-800">Dokumen:</strong>
+                                    @if($item->dokumen_link)
+                                        @php $dokumen = json_decode($item->dokumen_link, true); @endphp
+                                        @if(is_array($dokumen))
+                                            <div class="mt-2 space-y-1">
+                                                @foreach($dokumen as $dok)
+                                                <a href="{{ $dok['url'] }}" target="_blank" class="flex items-center text-orange-700 hover:text-orange-900 underline">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
+                                                    </svg>
+                                                    {{ $dok['judul'] }}
+                                                </a>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <a href="{{ $item->dokumen_link }}" target="_blank" class="flex items-center text-orange-700 hover:text-orange-900 underline mt-1">
+                                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
+                                                </svg>
+                                                Lihat Dokumen
+                                            </a>
+                                        @endif
+                                    @else
+                                        <div class="text-orange-600 mt-1 italic">Belum ada dokumen</div>
+                                    @endif
+                                </div>
+                                <div class="bg-teal-50 p-3 rounded">
+                                    <strong class="text-teal-800">Keterangan:</strong>
+                                    <div class="text-teal-700 mt-1">{{ $item->keterangan ?: 'Tidak ada keterangan tambahan' }}</div>
+                                </div>
                             </div>
-                            @if(auth()->user()->role_id == 1 || auth()->user()->role_id == 4)
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                                <div><strong class="text-gray-600">Unit:</strong> {{ $item->nama_unit }}</div>
-                            </div>
-                            @endif
                         </div>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="{{ auth()->user()->role_id == 1 || auth()->user()->role_id == 4 ? '7' : '6' }}" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
-@endsection
-
+@empty
+<div class="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+    Tidak ada data
+</div>
+@endforelse
 
 <script>
 function toggleDetail(id) {
@@ -196,3 +248,4 @@ function toggleDetail(id) {
     element.classList.toggle('hidden');
 }
 </script>
+@endsection

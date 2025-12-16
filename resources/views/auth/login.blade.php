@@ -8,44 +8,40 @@
 </head>
 <body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen flex flex-col items-center justify-center p-4">
     <div class="flex flex-col lg:flex-row max-w-md lg:max-w-5xl my-auto w-full bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div class="hidden lg:flex w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-700 p-8 lg:p-12 text-white flex-col justify-center">
+        <div class="hidden lg:flex w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-red-700 p-8 lg:p-12 text-white flex-col justify-center">
             <div class="mb-8 flex justify-center">
-                <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-                    </svg>
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center backdrop-blur-sm p-4">
+                    <img src="{{ asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain">
                 </div>
             </div>
             <h1 class="text-4xl font-bold text-center mb-2">IPASS</h1>
-            <p class="text-center text-blue-100 mb-8">Sistem Informasi Akademik</p>
+            <p class="text-center text-blue-100 mb-8">Sistem Informasi Audit</p>
             <h2 class="text-2xl font-semibold text-center mb-6">Selamat Datang</h2>
-            <p class="text-center text-sm mb-8 leading-relaxed">Akses portal akademik Anda untuk mengelola data mahasiswa, jadwal kuliah, nilai, dan informasi akademik lainnya dengan mudah dan aman.</p>
+            <p class="text-center text-sm mb-8 leading-relaxed">Akses portal audit Anda untuk mengelola data audit, laporan, temuan, dan informasi audit lainnya dengan mudah dan aman.</p>
             <div class="space-y-3">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm">Manajemen Data Mahasiswa</span>
+                    <span class="text-sm">Manajemen Data Audit</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm">Jadwal Kuliah Real-time</span>
+                    <span class="text-sm">Jadwal Audit</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm">Monitoring Nilai & KHS</span>
+                    <span class="text-sm">Monitoring Audit</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm">Notifikasi Akademik</span>
+                    <span class="text-sm">Generate Laporan Audit</span>
                 </div>
             </div>
         </div>
 
         <div class="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
             <div class="text-center lg:hidden mb-8">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-                    </svg>
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-red-700 rounded-full flex items-center justify-center mx-auto mb-4 p-3">
+                    <img src="{{ asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain">
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800">IPASS</h1>
                 <p class="text-sm text-gray-600">Sistem Informasi Akademik</p>
@@ -89,7 +85,7 @@
                     <a href="/forgot-password" class="text-sm text-blue-600 hover:text-blue-700">Lupa password?</a>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg font-medium hover:bg-red-700 transition flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                     Masuk ke Sistem
                 </button>

@@ -15,8 +15,21 @@ class IndikatorKinerjaController extends Controller
             ->leftJoin('users as penyetuju', 'indikator_kinerja.disetujui_oleh', '=', 'penyetuju.user_id')
             ->select('indikator_kinerja.*', 'kriteria.nama_kriteria', 'kriteria.kode_kriteria', 'pembuat.name as pembuat', 'penyetuju.name as penyetuju');
 
-        if (auth()->user()->role_id != 1 && auth()->user()->role_id != 4) {
+        if (auth()->user()->role_id == 3) {
             $query->where('indikator_kinerja.dibuat_oleh', auth()->id());
+        }
+
+        // Auditor hanya bisa lihat unit yang ditugaskan
+        if (auth()->user()->role_id == 2) {
+            $assignedUnits = DB::table('auditor_unit_assignments')
+                ->where('auditor_id', auth()->id())
+                ->pluck('unit_id');
+            if ($assignedUnits->isEmpty()) {
+                $query->whereRaw('1 = 0'); // No results if no assignments
+            } else {
+                $query->join('users as u', 'indikator_kinerja.dibuat_oleh', '=', 'u.user_id')
+                      ->whereIn('u.unit_id', $assignedUnits);
+            }
         }
 
         // Filter untuk admin dan direktur
@@ -57,7 +70,11 @@ class IndikatorKinerjaController extends Controller
 
     public function create()
     {
-        $kriteria = DB::table('kriteria')->get();
+        $kriteria = DB::table('kriteria')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->where('users.unit_id', auth()->user()->unit_id)
+            ->select('kriteria.*')
+            ->get();
         return view('dashboard.indikator-kinerja.create', compact('kriteria'));
     }
 
@@ -84,6 +101,17 @@ class IndikatorKinerjaController extends Controller
             'target.*' => 'required|string',
         ]);
 
+        // Validate that the selected criteria belongs to the same unit
+        $kriteria = DB::table('kriteria')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->where('kriteria.kriteria_id', $request->kriteria_id)
+            ->where('users.unit_id', auth()->user()->unit_id)
+            ->first();
+
+        if (!$kriteria) {
+            return redirect()->back()->with('error', 'Anda hanya bisa memilih kriteria dari unit Anda sendiri');
+        }
+
         DB::table('indikator_kinerja')->insert([
             'kriteria_id' => $request->kriteria_id,
             'kode_indikator' => $request->kode_indikator,
@@ -105,7 +133,11 @@ class IndikatorKinerjaController extends Controller
             return redirect('/dashboard/indikator-kinerja')->with('error', 'Anda tidak bisa edit data ini');
         }
 
-        $kriteria = DB::table('kriteria')->get();
+        $kriteria = DB::table('kriteria')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->where('users.unit_id', auth()->user()->unit_id)
+            ->select('kriteria.*')
+            ->get();
         return view('dashboard.indikator-kinerja.edit', compact('indikator', 'kriteria'));
     }
 
@@ -124,6 +156,17 @@ class IndikatorKinerjaController extends Controller
             'target' => 'required|array',
             'target.*' => 'required|string',
         ]);
+
+        // Validate that the selected criteria belongs to the same unit
+        $kriteria = DB::table('kriteria')
+            ->join('users', 'kriteria.dibuat_oleh', '=', 'users.user_id')
+            ->where('kriteria.kriteria_id', $request->kriteria_id)
+            ->where('users.unit_id', auth()->user()->unit_id)
+            ->first();
+
+        if (!$kriteria) {
+            return redirect()->back()->with('error', 'Anda hanya bisa memilih kriteria dari unit Anda sendiri');
+        }
 
         DB::table('indikator_kinerja')->where('indikator_id', $id)->update([
             'kriteria_id' => $request->kriteria_id,

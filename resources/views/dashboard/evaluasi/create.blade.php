@@ -8,10 +8,18 @@
         @csrf
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-2">Pelaksanaan</label>
-            <select name="pelaksanaan_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+            <select name="pelaksanaan_id" id="pelaksanaan_select" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required onchange="updateAuditors()">
                 <option value="">Pilih Pelaksanaan</option>
                 @foreach($pelaksanaan as $item)
-                <option value="{{ $item->pelaksanaan_id }}">{{ $item->nama_kriteria }} - {{ $item->nama_indikator }} ({{ $item->tahun }})</option>
+                @php
+                    $unitName = DB::table('users')
+                        ->join('unit', 'users.unit_id', '=', 'unit.unit_id')
+                        ->where('users.user_id', $item->dibuat_oleh)
+                        ->value('unit.nama_unit');
+                @endphp
+                <option value="{{ $item->pelaksanaan_id }}" data-auditors="{{ json_encode($item->auditors) }}" {{ request('pelaksanaan_id') == $item->pelaksanaan_id ? 'selected' : '' }}>
+                    [{{ $unitName }}] {{ $item->nama_kriteria }} - {{ $item->nama_indikator }} ({{ $item->tahun }})
+                </option>
                 @endforeach
             </select>
             @error('pelaksanaan_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -19,11 +27,8 @@
 
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-2">Auditor</label>
-            <select name="auditor_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
-                <option value="">Pilih Auditor</option>
-                @foreach($auditor as $item)
-                <option value="{{ $item->user_id }}" {{ $item->user_id == auth()->id() ? 'selected' : '' }}>{{ $item->name }}</option>
-                @endforeach
+            <select name="auditor_id" id="auditor_select" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                <option value="">Pilih Pelaksanaan terlebih dahulu</option>
             </select>
             @error('auditor_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
@@ -47,8 +52,20 @@
         </div>
 
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-medium mb-2">Rekomendasi Perbaikan (Feedback/Tindak Lanjut)</label>
-            <textarea name="rekomendasi_perbaikan" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Masukkan rekomendasi perbaikan untuk tindak lanjut tahun depan atau sebelum laporan audit"></textarea>
+            <label class="block text-gray-700 text-sm font-medium mb-2">Hasil Audit</label>
+            <select name="hasil_audit" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                <option value="">Pilih Hasil Audit</option>
+                <option value="Tidak Ada">Tidak Ada</option>
+                <option value="Minor">Minor</option>
+                <option value="Mayor">Mayor</option>
+                <option value="Observasi">Observasi</option>
+            </select>
+            @error('hasil_audit')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">Rekomendasi Perbaikan</label>
+            <textarea name="rekomendasi_perbaikan" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
             @error('rekomendasi_perbaikan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
@@ -64,4 +81,29 @@
         </div>
     </form>
 </div>
+
+<script>
+function updateAuditors() {
+    const pelaksanaanSelect = document.getElementById('pelaksanaan_select');
+    const auditorSelect = document.getElementById('auditor_select');
+    const selectedOption = pelaksanaanSelect.options[pelaksanaanSelect.selectedIndex];
+    
+    auditorSelect.innerHTML = '<option value="">Pilih Auditor</option>';
+    
+    if (selectedOption.value) {
+        const auditors = JSON.parse(selectedOption.getAttribute('data-auditors') || '[]');
+        auditors.forEach(auditor => {
+            const option = document.createElement('option');
+            option.value = auditor.user_id;
+            option.textContent = auditor.name;
+            auditorSelect.appendChild(option);
+        });
+    }
+}
+
+// Auto-update auditors on page load if pelaksanaan is pre-selected
+document.addEventListener('DOMContentLoaded', function() {
+    updateAuditors();
+});
+</script>
 @endsection

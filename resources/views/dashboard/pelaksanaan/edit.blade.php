@@ -24,21 +24,25 @@
         </div>
 
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Mulai</label>
-            <input type="date" name="tanggal_mulai" value="{{ $pelaksanaan->tanggal_mulai }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
-            @error('tanggal_mulai')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="block text-gray-700 text-sm font-medium mb-2">RAB (Anggaran)</label>
+            <input type="text" value="Rp {{ number_format($pelaksanaan->anggaran ?? 0, 0, ',', '.') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
         </div>
 
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Selesai</label>
-            <input type="date" name="tanggal_selesai" value="{{ $pelaksanaan->tanggal_selesai }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-            @error('tanggal_selesai')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Mulai (Perencanaan)</label>
+            <input type="date" value="{{ $pelaksanaan->tanggal_mulai }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
         </div>
 
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-medium mb-2">PIC (Penanggung Jawab)</label>
-            <input type="text" name="pic" value="{{ $pelaksanaan->pic }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nama PIC">
-            @error('pic')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Selesai (Perencanaan)</label>
+            <input type="date" value="{{ $pelaksanaan->tanggal_selesai }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Realisasi</label>
+            <input type="date" name="tanggal_realisasi" value="{{ $pelaksanaan->tanggal_realisasi }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            @error('tanggal_realisasi')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            <p class="text-xs text-gray-500 mt-1">Isi tanggal realisasi setelah pelaksanaan selesai</p>
         </div>
 
         <div class="mb-4">
@@ -67,20 +71,10 @@
             <button type="button" onclick="addDokumen()" class="text-blue-600 hover:text-blue-800 text-sm">+ Tambah Dokumen</button>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-6">
             <label class="block text-gray-700 text-sm font-medium mb-2">Keterangan</label>
             <textarea name="keterangan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg">{{ $pelaksanaan->keterangan }}</textarea>
             @error('keterangan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-        </div>
-
-        <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-medium mb-2">Status</label>
-            <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
-                <option value="Belum Dimulai" {{ $pelaksanaan->status == 'Belum Dimulai' ? 'selected' : '' }}>Belum Dimulai</option>
-                <option value="Sedang Berjalan" {{ $pelaksanaan->status == 'Sedang Berjalan' ? 'selected' : '' }}>Sedang Berjalan</option>
-                <option value="Selesai" {{ $pelaksanaan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-            </select>
-            @error('status')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="flex gap-2">

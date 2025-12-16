@@ -48,10 +48,28 @@
             @error('target_capaian')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
-        <div class="mb-6">
+        <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-2">Anggaran</label>
             <input type="number" name="anggaran" value="{{ $penetapan->anggaran }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
             @error('anggaran')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">PIC (Penanggung Jawab)</label>
+            <input type="text" name="pic" value="{{ $penetapan->pic }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nama PIC">
+            @error('pic')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Rencana Mulai</label>
+            <input type="date" name="tanggal_rencana_mulai" value="{{ $penetapan->tanggal_rencana_mulai }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            @error('tanggal_rencana_mulai')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Rencana Selesai</label>
+            <input type="date" name="tanggal_rencana_selesai" value="{{ $penetapan->tanggal_rencana_selesai }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            @error('tanggal_rencana_selesai')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="flex gap-2">

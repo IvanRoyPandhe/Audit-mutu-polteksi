@@ -35,24 +35,54 @@ class EvaluasiController extends Controller
         return view('dashboard.evaluasi.index', compact('evaluasi'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $pelaksanaan = DB::table('pelaksanaan')
+        $query = DB::table('pelaksanaan')
             ->join('penetapan', 'pelaksanaan.penetapan_id', '=', 'penetapan.penetapan_id')
             ->join('indikator_kinerja', 'penetapan.indikator_id', '=', 'indikator_kinerja.indikator_id')
             ->join('kriteria', 'indikator_kinerja.kriteria_id', '=', 'kriteria.kriteria_id')
+            ->join('users as pembuat', 'pelaksanaan.dibuat_oleh', '=', 'pembuat.user_id')
             ->where('pelaksanaan.status', 'Selesai')
-            ->whereNotExists(function($query) {
+            ->whereExists(function($query) {
                 $query->select(DB::raw(1))
-                      ->from('audit')
-                      ->whereColumn('audit.pelaksanaan_id', 'pelaksanaan.pelaksanaan_id');
+                      ->from('unit_auditors')
+                      ->whereColumn('unit_auditors.unit_id', 'pembuat.unit_id');
             })
-            ->select('pelaksanaan.*', 'indikator_kinerja.nama_indikator', 'kriteria.nama_kriteria', 'penetapan.tahun')
-            ->get();
+            ->whereExists(function($query) {
+                $query->select(DB::raw(1))
+                      ->from('unit_auditors')
+                      ->whereColumn('unit_auditors.unit_id', 'pembuat.unit_id')
+                      ->whereNotExists(function($subquery) {
+                          $subquery->select(DB::raw(1))
+                                   ->from('audit')
+                                   ->whereColumn('audit.pelaksanaan_id', 'pelaksanaan.pelaksanaan_id')
+                                   ->whereColumn('audit.auditor_id', 'unit_auditors.auditor_id');
+                      });
+            })
+            ->select('pelaksanaan.*', 'indikator_kinerja.nama_indikator', 'kriteria.nama_kriteria', 'penetapan.tahun', 'pembuat.unit_id');
 
-        $auditor = DB::table('users')->where('role_id', 2)->get();
+        if ($request->pelaksanaan_id) {
+            $query->where('pelaksanaan.pelaksanaan_id', $request->pelaksanaan_id);
+        }
 
-        return view('dashboard.evaluasi.create', compact('pelaksanaan', 'auditor'));
+        $pelaksanaan = $query->get();
+
+        // Get auditors for each unit (only those who haven't audited yet)
+        foreach ($pelaksanaan as $item) {
+            $item->auditors = DB::table('unit_auditors')
+                ->join('users', 'unit_auditors.auditor_id', '=', 'users.user_id')
+                ->where('unit_auditors.unit_id', $item->unit_id)
+                ->whereNotExists(function($query) use ($item) {
+                    $query->select(DB::raw(1))
+                          ->from('audit')
+                          ->where('audit.pelaksanaan_id', $item->pelaksanaan_id)
+                          ->whereColumn('audit.auditor_id', 'unit_auditors.auditor_id');
+                })
+                ->select('users.name', 'users.user_id')
+                ->get();
+        }
+
+        return view('dashboard.evaluasi.create', compact('pelaksanaan'));
     }
 
     public function store(Request $request)
@@ -62,15 +92,21 @@ class EvaluasiController extends Controller
             'auditor_id' => 'required|exists:users,user_id',
             'tanggal_audit' => 'required|date',
             'evaluasi_kesesuaian' => 'required|in:Sesuai,Tidak Sesuai,Menyimpang,Melampaui',
+            'hasil_audit' => 'required|in:Tidak Ada,Minor,Mayor,Observasi',
             'rekomendasi_perbaikan' => 'nullable',
             'catatan_penutupan' => 'nullable',
         ]);
 
+        $request->validate([
+            'auditor_id' => 'required|exists:users,user_id',
+        ]);
+        
         DB::table('audit')->insert([
             'pelaksanaan_id' => $request->pelaksanaan_id,
             'auditor_id' => $request->auditor_id,
             'tanggal_audit' => $request->tanggal_audit,
             'evaluasi_kesesuaian' => $request->evaluasi_kesesuaian,
+            'hasil_audit' => $request->hasil_audit,
             'rekomendasi_perbaikan' => $request->rekomendasi_perbaikan,
             'catatan_penutupan' => $request->catatan_penutupan,
             'dibuat_oleh' => auth()->id(),
@@ -103,6 +139,7 @@ class EvaluasiController extends Controller
             'auditor_id' => 'required|exists:users,user_id',
             'tanggal_audit' => 'required|date',
             'evaluasi_kesesuaian' => 'required|in:Sesuai,Tidak Sesuai,Menyimpang,Melampaui',
+            'hasil_audit' => 'required|in:Tidak Ada,Minor,Mayor,Observasi',
             'rekomendasi_perbaikan' => 'nullable',
             'catatan_penutupan' => 'nullable',
         ]);
@@ -111,6 +148,7 @@ class EvaluasiController extends Controller
             'auditor_id' => $request->auditor_id,
             'tanggal_audit' => $request->tanggal_audit,
             'evaluasi_kesesuaian' => $request->evaluasi_kesesuaian,
+            'hasil_audit' => $request->hasil_audit,
             'rekomendasi_perbaikan' => $request->rekomendasi_perbaikan,
             'catatan_penutupan' => $request->catatan_penutupan,
         ]);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\AuditorAssignmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EvaluasiController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StandarMutuController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UnitAuditorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -32,73 +34,107 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->prefix('dashboard')->group(function () {
-    Route::get('/', [DashboardController::class, 'index']);
-    Route::get('/standar-mutu', [StandarMutuController::class, 'index']);
-    Route::get('/standar-mutu/create', [StandarMutuController::class, 'create']);
-    Route::post('/standar-mutu', [StandarMutuController::class, 'store']);
-    Route::get('/standar-mutu/{id}/edit', [StandarMutuController::class, 'edit']);
-    Route::put('/standar-mutu/{id}', [StandarMutuController::class, 'update']);
-    Route::delete('/standar-mutu/{id}', [StandarMutuController::class, 'destroy']);
-    Route::get('/kriteria', [KriteriaController::class, 'index']);
-    Route::get('/kriteria/create', [KriteriaController::class, 'create']);
-    Route::post('/kriteria', [KriteriaController::class, 'store']);
-    Route::get('/kriteria/{id}', [KriteriaController::class, 'show']);
-    Route::get('/kriteria/{id}/edit', [KriteriaController::class, 'edit']);
-    Route::put('/kriteria/{id}', [KriteriaController::class, 'update']);
-    Route::delete('/kriteria/{id}', [KriteriaController::class, 'destroy']);
-    Route::post('/kriteria/{id}/resubmit', [KriteriaController::class, 'resubmit']);
-    Route::get('/indikator-kinerja', [IndikatorKinerjaController::class, 'index']);
-    Route::get('/indikator-kinerja/create', [IndikatorKinerjaController::class, 'create']);
-    Route::post('/indikator-kinerja', [IndikatorKinerjaController::class, 'store']);
-    Route::get('/indikator-kinerja/{id}', [IndikatorKinerjaController::class, 'show']);
-    Route::get('/indikator-kinerja/{id}/edit', [IndikatorKinerjaController::class, 'edit']);
-    Route::put('/indikator-kinerja/{id}', [IndikatorKinerjaController::class, 'update']);
-    Route::delete('/indikator-kinerja/{id}', [IndikatorKinerjaController::class, 'destroy']);
-    Route::post('/indikator-kinerja/{id}/resubmit', [IndikatorKinerjaController::class, 'resubmit']);
-    Route::get('/approval', [ApprovalController::class, 'index']);
-    Route::post('/approval', [ApprovalController::class, 'approve']);
-    Route::post('/approval/reject', [ApprovalController::class, 'reject']);
-    Route::get('/approval/approved', [ApprovalController::class, 'approved']);
-    Route::get('/approval/penetapan', [ApprovalController::class, 'penetapan']);
-    Route::get('/penetapan', [PenetapanController::class, 'index']);
-    Route::get('/penetapan/create', [PenetapanController::class, 'create']);
-    Route::post('/penetapan', [PenetapanController::class, 'store']);
-    Route::post('/penetapan/{id}/resubmit', [PenetapanController::class, 'resubmit']);
-    Route::get('/penetapan/{id}/edit', [PenetapanController::class, 'edit']);
-    Route::put('/penetapan/{id}', [PenetapanController::class, 'update']);
-    Route::delete('/penetapan/{id}', [PenetapanController::class, 'destroy']);
-    Route::get('/pelaksanaan', [PelaksanaanController::class, 'index']);
-    Route::get('/pelaksanaan/create', [PelaksanaanController::class, 'create']);
-    Route::post('/pelaksanaan', [PelaksanaanController::class, 'store']);
-    Route::get('/pelaksanaan/{id}/edit', [PelaksanaanController::class, 'edit']);
-    Route::put('/pelaksanaan/{id}', [PelaksanaanController::class, 'update']);
-    Route::delete('/pelaksanaan/{id}', [PelaksanaanController::class, 'destroy']);
-    Route::get('/evaluasi', [EvaluasiController::class, 'index']);
-    Route::get('/evaluasi/create', [EvaluasiController::class, 'create']);
-    Route::post('/evaluasi', [EvaluasiController::class, 'store']);
-    Route::get('/evaluasi/{id}/edit', [EvaluasiController::class, 'edit']);
-    Route::put('/evaluasi/{id}', [EvaluasiController::class, 'update']);
-    Route::delete('/evaluasi/{id}', [EvaluasiController::class, 'destroy']);
-    Route::get('/laporan', [LaporanController::class, 'index']);
-    Route::get('/laporan/pdf', [LaporanController::class, 'pdf']);
+    Route::middleware('permission:dashboard')->get('/', [DashboardController::class, 'index']);
+    Route::middleware('permission:standar-mutu')->group(function () {
+        Route::get('/standar-mutu', [StandarMutuController::class, 'index']);
+        Route::get('/standar-mutu/create', [StandarMutuController::class, 'create']);
+        Route::post('/standar-mutu', [StandarMutuController::class, 'store']);
+        Route::get('/standar-mutu/{id}/edit', [StandarMutuController::class, 'edit']);
+        Route::put('/standar-mutu/{id}', [StandarMutuController::class, 'update']);
+        Route::delete('/standar-mutu/{id}', [StandarMutuController::class, 'destroy']);
+    });
+    Route::middleware('permission:kriteria')->group(function () {
+        Route::get('/kriteria', [KriteriaController::class, 'index']);
+        Route::get('/kriteria/create', [KriteriaController::class, 'create']);
+        Route::post('/kriteria', [KriteriaController::class, 'store']);
+        Route::get('/kriteria/{id}', [KriteriaController::class, 'show']);
+        Route::get('/kriteria/{id}/edit', [KriteriaController::class, 'edit']);
+        Route::put('/kriteria/{id}', [KriteriaController::class, 'update']);
+        Route::delete('/kriteria/{id}', [KriteriaController::class, 'destroy']);
+        Route::post('/kriteria/{id}/resubmit', [KriteriaController::class, 'resubmit']);
+    });
+    Route::middleware('permission:indikator-kinerja')->group(function () {
+        Route::get('/indikator-kinerja', [IndikatorKinerjaController::class, 'index']);
+        Route::get('/indikator-kinerja/create', [IndikatorKinerjaController::class, 'create']);
+        Route::post('/indikator-kinerja', [IndikatorKinerjaController::class, 'store']);
+        Route::get('/indikator-kinerja/{id}', [IndikatorKinerjaController::class, 'show']);
+        Route::get('/indikator-kinerja/{id}/edit', [IndikatorKinerjaController::class, 'edit']);
+        Route::put('/indikator-kinerja/{id}', [IndikatorKinerjaController::class, 'update']);
+        Route::delete('/indikator-kinerja/{id}', [IndikatorKinerjaController::class, 'destroy']);
+        Route::post('/indikator-kinerja/{id}/resubmit', [IndikatorKinerjaController::class, 'resubmit']);
+    });
+    Route::middleware('permission:approval')->group(function () {
+        Route::get('/approval', [ApprovalController::class, 'index']);
+        Route::post('/approval', [ApprovalController::class, 'approve']);
+        Route::post('/approval/reject', [ApprovalController::class, 'reject']);
+        Route::get('/approval/approved', [ApprovalController::class, 'approved']);
+        Route::get('/approval/penetapan', [ApprovalController::class, 'penetapan']);
+    });
+    Route::middleware('permission:penetapan')->group(function () {
+        Route::get('/penetapan', [PenetapanController::class, 'index']);
+        Route::get('/penetapan/create', [PenetapanController::class, 'create']);
+        Route::post('/penetapan', [PenetapanController::class, 'store']);
+        Route::post('/penetapan/{id}/resubmit', [PenetapanController::class, 'resubmit']);
+        Route::get('/penetapan/{id}/edit', [PenetapanController::class, 'edit']);
+        Route::put('/penetapan/{id}', [PenetapanController::class, 'update']);
+        Route::delete('/penetapan/{id}', [PenetapanController::class, 'destroy']);
+    });
+    Route::middleware('permission:pelaksanaan')->group(function () {
+        Route::get('/pelaksanaan', [PelaksanaanController::class, 'index']);
+        Route::get('/pelaksanaan/create', [PelaksanaanController::class, 'create']);
+        Route::post('/pelaksanaan', [PelaksanaanController::class, 'store']);
+        Route::get('/pelaksanaan/{id}/edit', [PelaksanaanController::class, 'edit']);
+        Route::put('/pelaksanaan/{id}', [PelaksanaanController::class, 'update']);
+        Route::post('/pelaksanaan/{id}/assign-auditor', [PelaksanaanController::class, 'assignAuditor']);
+        Route::delete('/pelaksanaan/{pelaksanaanId}/auditor/{auditorId}', [PelaksanaanController::class, 'removeAuditor']);
+        Route::delete('/pelaksanaan/{id}', [PelaksanaanController::class, 'destroy']);
+    });
+    Route::middleware('permission:evaluasi')->group(function () {
+        Route::get('/evaluasi', [EvaluasiController::class, 'index']);
+        Route::get('/evaluasi/create', [EvaluasiController::class, 'create']);
+        Route::post('/evaluasi', [EvaluasiController::class, 'store']);
+        Route::get('/evaluasi/{id}/edit', [EvaluasiController::class, 'edit']);
+        Route::put('/evaluasi/{id}', [EvaluasiController::class, 'update']);
+        Route::delete('/evaluasi/{id}', [EvaluasiController::class, 'destroy']);
+    });
+    Route::middleware('permission:laporan')->group(function () {
+        Route::get('/laporan', [LaporanController::class, 'index']);
+        Route::get('/laporan/pdf', [LaporanController::class, 'pdf']);
+    });
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::get('/profile/edit', [ProfileController::class, 'edit']);
     Route::put('/profile', [ProfileController::class, 'update']);
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/create', [UserController::class, 'create']);
-    Route::post('/users', [UserController::class, 'store']);
-    Route::get('/users/{id}/edit', [UserController::class, 'edit']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
-    Route::get('/roles', [RoleController::class, 'index']);
-    Route::get('/roles/create', [RoleController::class, 'create']);
-    Route::post('/roles', [RoleController::class, 'store']);
-    Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
-    Route::get('/units', [UnitController::class, 'index']);
-    Route::get('/units/create', [UnitController::class, 'create']);
-    Route::post('/units', [UnitController::class, 'store']);
-    Route::get('/units/{id}/edit', [UnitController::class, 'edit']);
-    Route::put('/units/{id}', [UnitController::class, 'update']);
-    Route::delete('/units/{id}', [UnitController::class, 'destroy']);
+    Route::middleware('permission:users')->group(function () {
+        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users/create', [UserController::class, 'create']);
+        Route::post('/users', [UserController::class, 'store']);
+        Route::get('/users/{id}/edit', [UserController::class, 'edit']);
+        Route::put('/users/{id}', [UserController::class, 'update']);
+        Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    });
+    Route::middleware('permission:roles')->group(function () {
+        Route::get('/roles', [RoleController::class, 'index']);
+        Route::get('/roles/create', [RoleController::class, 'create']);
+        Route::post('/roles', [RoleController::class, 'store']);
+        Route::get('/roles/{id}/edit', [RoleController::class, 'edit']);
+        Route::put('/roles/{id}', [RoleController::class, 'update']);
+        Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
+    });
+    Route::middleware('permission:units')->group(function () {
+        Route::get('/units', [UnitController::class, 'index']);
+        Route::get('/units/create', [UnitController::class, 'create']);
+        Route::post('/units', [UnitController::class, 'store']);
+        Route::get('/units/{id}/edit', [UnitController::class, 'edit']);
+        Route::put('/units/{id}', [UnitController::class, 'update']);
+        Route::delete('/units/{id}', [UnitController::class, 'destroy']);
+    });
+    Route::get('/auditor-assignments', [AuditorAssignmentController::class, 'index']);
+    Route::post('/auditor-assignments', [AuditorAssignmentController::class, 'store']);
+    Route::delete('/auditor-assignments/{id}', [AuditorAssignmentController::class, 'destroy']);
+    Route::middleware('permission:unit-auditors')->group(function () {
+        Route::get('/unit-auditors', [UnitAuditorController::class, 'index']);
+        Route::post('/unit-auditors', [UnitAuditorController::class, 'store']);
+        Route::delete('/unit-auditors/{id}', [UnitAuditorController::class, 'destroy']);
+    });
     Route::post('/logout', [AuthController::class, 'logout']);
 });

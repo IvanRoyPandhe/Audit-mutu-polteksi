@@ -13,6 +13,40 @@ class RoleController extends Controller
         return view('dashboard.roles.index', compact('roles'));
     }
 
+    public function edit($id)
+    {
+        $role = DB::table('role')->where('role_id', $id)->first();
+        $availablePermissions = [
+            'dashboard' => 'Dashboard',
+            'standar-mutu' => 'Standar Mutu',
+            'kriteria' => 'Kriteria',
+            'indikator-kinerja' => 'Indikator Kinerja',
+            'penetapan' => 'Penetapan',
+            'pelaksanaan' => 'Pelaksanaan',
+            'evaluasi' => 'Evaluasi',
+            'approval' => 'Approval',
+            'laporan' => 'Laporan',
+            'users' => 'Users',
+            'roles' => 'Roles',
+            'units' => 'Units',
+            'unit-auditors' => 'Unit Auditors'
+        ];
+        return view('dashboard.roles.edit', compact('role', 'availablePermissions'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'permissions' => 'array',
+        ]);
+
+        DB::table('role')->where('role_id', $id)->update([
+            'permissions' => json_encode($request->permissions ?? []),
+        ]);
+
+        return redirect('/dashboard/roles')->with('success', 'Role permissions berhasil diupdate');
+    }
+
     public function create()
     {
         return view('dashboard.roles.create');
