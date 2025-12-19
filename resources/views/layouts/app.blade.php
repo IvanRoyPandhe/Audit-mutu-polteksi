@@ -25,7 +25,7 @@
             <div class="absolute top-1/2 right-0 w-20 h-20 bg-white/20 rounded-full -mr-10 animate-pulse" style="animation-duration: 2.5s;"></div>
             <div class="p-6 flex items-center relative z-10">
                 <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-3 p-2">
-                    <img src="{{ asset('images/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="{{ asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div style="display:none; font-size:12px; font-weight:bold; color:white;">LOGO</div>
                 </div>
                 <div>
