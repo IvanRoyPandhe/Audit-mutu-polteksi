@@ -92,6 +92,13 @@
                             <button type="submit" class="text-red-600 hover:text-red-800" onclick="return confirm('Yakin hapus?')">Hapus</button>
                         </form>
                         @endif
+                    @elseif(auth()->user()->role_id == 1)
+                        <a href="/dashboard/penetapan/{{ $item->penetapan_id }}/edit" class="text-yellow-600 hover:text-yellow-800 mr-3">Edit</a>
+                        <form method="POST" action="/dashboard/penetapan/{{ $item->penetapan_id }}" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-800" onclick="return confirm('Yakin hapus?')">Hapus</button>
+                        </form>
                     @endif
                 </td>
             </tr>
