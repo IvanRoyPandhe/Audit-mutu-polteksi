@@ -196,17 +196,18 @@ class PenetapanController extends Controller
             return redirect('/dashboard/penetapan')->with('error', 'Anda tidak bisa hapus data ini');
         }
 
-        // Check if there are related pelaksanaan records
-        $pelaksanaanCount = DB::table('pelaksanaan')->where('penetapan_id', $id)->count();
-        if ($pelaksanaanCount > 0) {
-            return redirect('/dashboard/penetapan')->with('error', 'Tidak dapat menghapus penetapan yang sudah memiliki data pelaksanaan');
-        }
-
         try {
+            // Check for related records
+            $pelaksanaanCount = DB::table('pelaksanaan')->where('penetapan_id', $id)->count();
+            if ($pelaksanaanCount > 0) {
+                return redirect('/dashboard/penetapan')->with('error', 'Tidak dapat menghapus penetapan yang sudah memiliki ' . $pelaksanaanCount . ' data pelaksanaan');
+            }
+
             DB::table('penetapan')->where('penetapan_id', $id)->delete();
             return redirect('/dashboard/penetapan')->with('success', 'Penetapan berhasil dihapus');
         } catch (\Exception $e) {
-            return redirect('/dashboard/penetapan')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+            \Log::error('Error deleting penetapan: ' . $e->getMessage());
+            return redirect('/dashboard/penetapan')->with('error', 'Gagal menghapus data. Silakan coba lagi.');
         }
     }
 }

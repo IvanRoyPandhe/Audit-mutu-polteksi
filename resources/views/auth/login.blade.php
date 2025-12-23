@@ -11,7 +11,7 @@
         <div class="hidden lg:flex w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-red-700 p-8 lg:p-12 text-white flex-col justify-center">
             <div class="mb-8 flex justify-center">
                 <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center backdrop-blur-sm p-4">
-                    <img src="{{ asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="{{ secure_asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div style="display:none; font-size:24px; font-weight:bold; color:#1e40af;">LOGO</div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
         <div class="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
             <div class="text-center lg:hidden mb-8">
                 <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-red-700 rounded-full flex items-center justify-center mx-auto mb-4 p-3">
-                    <img src="{{ asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="{{ secure_asset('storage/polteksi.png') }}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div style="display:none; font-size:16px; font-weight:bold; color:white;">LOGO</div>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800">IPASS</h1>
