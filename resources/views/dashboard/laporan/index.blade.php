@@ -3,10 +3,21 @@
 @section('title', 'Laporan Audit')
 
 @section('content')
-<div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <h2 class="text-xl font-semibold">Laporan Audit</h2>
+<div class="mb-6 flex flex-col gap-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 class="text-xl font-semibold">Laporan Audit</h2>
+        
+        <form method="GET" action="/dashboard/laporan/pdf" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <input type="hidden" name="unit_id" value="{{ request('unit_id') }}">
+            <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/></svg>
+                Download PDF
+            </button>
+        </form>
+    </div>
     
-    <form method="GET" action="/dashboard/laporan/pdf" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+    <form method="GET" action="/dashboard/laporan" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <select name="unit_id" class="px-4 py-2 border border-gray-300 rounded-lg">
             <option value="">Semua Unit</option>
             @foreach($units as $unit)
@@ -19,10 +30,8 @@
             <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
             @endforeach
         </select>
-        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/></svg>
-            Download PDF
-        </button>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Filter</button>
+        <a href="/dashboard/laporan" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">Reset</a>
     </form>
 </div>
 
