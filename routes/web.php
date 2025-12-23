@@ -35,7 +35,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->prefix('dashboard')->group(function () {
-    Route::middleware('permission:dashboard')->get('/', [DashboardController::class, 'index']);
+    Route::get('/', [DashboardController::class, 'index']);
     Route::middleware('permission:standar-mutu')->group(function () {
         Route::get('/standar-mutu', [StandarMutuController::class, 'index']);
         Route::get('/standar-mutu/create', [StandarMutuController::class, 'create']);
