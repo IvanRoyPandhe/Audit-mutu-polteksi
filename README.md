@@ -1,59 +1,199 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# IPASS - Sistem Audit Mutu Internal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Tentang Aplikasi
 
-## About Laravel
+IPASS (Internal Process Audit System) adalah sistem informasi audit mutu internal yang dikembangkan untuk Politeknik Semen Indonesia. Aplikasi ini dirancang untuk mengelola seluruh proses audit mutu internal mulai dari perencanaan, pelaksanaan, hingga pelaporan.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Master Data
+- **Standar Mutu** - Pengelolaan standar mutu institusi
+- **Kriteria** - Definisi kriteria audit
+- **Indikator Kinerja** - KPI dan indikator kinerja utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Proses Audit
+- **Penetapan** - Penjadwalan dan penetapan audit
+- **Pelaksanaan** - Eksekusi proses audit
+- **Evaluasi** - Penilaian dan evaluasi hasil audit
+- **Approval** - Sistem persetujuan bertingkat
 
-## Learning Laravel
+### Manajemen
+- **Users** - Pengelolaan pengguna sistem
+- **Roles** - Manajemen peran dan hak akses
+- **Unit Kerja** - Organisasi unit kerja
+- **Unit Auditors** - Penugasan auditor per unit
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Dokumentasi
+- **Buku Kebijakan** - Repositori kebijakan audit
+- **Manual** - Panduan prosedur audit
+- **Formulir** - Template formulir audit
+- **Laporan** - Generate laporan audit dalam format PDF
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Arsitektur Sistem
 
-## Laravel Sponsors
+### Technology Stack
+- **Framework**: Laravel 12.x
+- **Database**: PostgreSQL/SQLite
+- **Frontend**: Tailwind CSS + Alpine.js
+- **PDF Generation**: DomPDF
+- **Authentication**: Laravel Auth
+- **Authorization**: Role-based Access Control (RBAC)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Database Schema
+```
+├── users (Pengguna sistem)
+├── role (Peran pengguna)
+├── unit (Unit kerja)
+├── standar_mutu (Standar mutu)
+├── kriteria (Kriteria audit)
+├── indikator_kinerja (KPI)
+├── penetapan (Penjadwalan audit)
+├── pelaksanaan (Eksekusi audit)
+├── evaluasi (Evaluasi hasil)
+└── approval (Persetujuan)
+```
 
-### Premium Partners
+### Struktur Direktori
+```
+├── app/
+│   ├── Http/Controllers/     # Controllers
+│   ├── Models/              # Eloquent Models
+│   └── Middleware/          # Custom Middleware
+├── resources/
+│   ├── views/
+│   │   ├── layouts/         # Layout templates
+│   │   ├── auth/           # Authentication views
+│   │   └── dashboard/      # Dashboard views
+│   └── css/                # Stylesheets
+├── routes/
+│   └── web.php             # Web routes
+├── database/
+│   ├── migrations/         # Database migrations
+│   └── seeders/           # Database seeders
+└── public/
+    └── polteksilogo.png   # Logo aplikasi
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Instalasi
 
-## Contributing
+### Requirements
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+- PostgreSQL/SQLite
+- Docker (opsional)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Setup
 
-## Code of Conduct
+1. **Clone Repository**
+```bash
+git clone <repository-url>
+cd Audit-mutu-polteksi
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Install Dependencies**
+```bash
+composer install --ignore-platform-reqs
+npm install
+```
 
-## Security Vulnerabilities
+3. **Environment Configuration**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Database Setup**
+```bash
+# Untuk PostgreSQL (production)
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=audit_polteksi
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+# Untuk SQLite (development)
+DB_CONNECTION=sqlite
+touch database/database.sqlite
+```
+
+5. **Database Migration**
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+6. **Run Application**
+```bash
+php artisan serve
+```
+
+### Docker Setup (Opsional)
+
+```bash
+# Jalankan database dengan Docker
+docker-compose up -d
+
+# Update .env untuk Docker
+DB_HOST=127.0.0.1
+DB_PORT=5433
+DB_USERNAME=admin_audit
+DB_PASSWORD=admin@audit
+```
+
+## Penggunaan
+
+### Login
+- URL: `/login`
+- Default Admin: admin@polteksi.ac.id
+- Dashboard: `/dashboard`
+
+### Role & Permissions
+- **Admin**: Akses penuh ke semua fitur
+- **Auditor**: Akses ke proses audit dan evaluasi
+- **Unit Manager**: Akses ke data unit kerja
+- **Viewer**: Akses read-only ke laporan
+
+### Workflow Audit
+1. **Penetapan** - Admin menjadwalkan audit
+2. **Pelaksanaan** - Auditor melakukan audit
+3. **Evaluasi** - Penilaian hasil audit
+4. **Approval** - Persetujuan hasil audit
+5. **Laporan** - Generate laporan final
+
+## API Endpoints
+
+### Authentication
+- `POST /login` - Login pengguna
+- `POST /logout` - Logout pengguna
+
+### Dashboard
+- `GET /dashboard` - Dashboard utama
+- `GET /dashboard/{module}` - Modul spesifik
+
+### Reports
+- `GET /dashboard/laporan` - Daftar laporan
+- `GET /dashboard/laporan/pdf` - Generate PDF
+
+## Kontribusi
+
+1. Fork repository
+2. Buat feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT License - lihat file [LICENSE](LICENSE) untuk detail.
+
+## Support
+
+- **Developer**: Tim Teknologi Informasi Politeknik Semen Indonesia
+- **Email**: ti@polteksi.ac.id
+- **Documentation**: [Wiki](wiki)
+
+---
+
+**© 2024 Politeknik Semen Indonesia - Sistem Audit Mutu Internal**
