@@ -50,7 +50,7 @@ class CheckPermission
         }
 
         if (!in_array($permission, $permissions)) {
-            abort(404);
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         return $next($request);

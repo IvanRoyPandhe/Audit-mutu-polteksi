@@ -24,6 +24,16 @@ fi
 echo "Attempting to run migrations..."
 if php artisan migrate --force 2>&1; then
     echo "✓ Migrations completed"
+    
+    # Run seeder if database is empty
+    echo "Checking if seeding is needed..."
+    USER_COUNT=$(php artisan tinker --execute="echo DB::table('users')->count();" 2>/dev/null | tail -1)
+    if [ "$USER_COUNT" = "0" ] || [ -z "$USER_COUNT" ]; then
+        echo "Seeding initial data..."
+        php artisan db:seed --class=InitialDataSeeder 2>&1 && echo "✓ Seeding completed" || echo "✗ Seeding failed"
+    else
+        echo "✓ Database already has data, skipping seeder"
+    fi
 else
     echo "✗ Migrations failed - will retry later"
     echo "Container will start anyway for debugging"
