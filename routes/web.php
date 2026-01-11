@@ -4,6 +4,7 @@ use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AuditorAssignmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DirekturReviewController;
 use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\IndikatorKinerjaController;
@@ -147,6 +148,11 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::get('/buku-kebijakan/{id}/edit', [BukuKebijakanController::class, 'edit']);
         Route::put('/buku-kebijakan/{id}', [BukuKebijakanController::class, 'update']);
         Route::delete('/buku-kebijakan/{id}', [BukuKebijakanController::class, 'destroy']);
+    });
+    Route::middleware('permission:direktur-review')->group(function () {
+        Route::get('/direktur-review', [DirekturReviewController::class, 'index']);
+        Route::get('/direktur-review/{id}', [DirekturReviewController::class, 'show']);
+        Route::put('/direktur-review/{id}', [DirekturReviewController::class, 'update']);
     });
     Route::post('/logout', [AuthController::class, 'logout']);
 });

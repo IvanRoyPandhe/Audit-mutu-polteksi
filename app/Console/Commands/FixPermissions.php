@@ -24,6 +24,7 @@ class FixPermissions extends Command
                 'pelaksanaan',
                 'evaluasi',
                 'laporan',
+                'direktur-review',
                 'users',
                 'roles',
                 'units',
