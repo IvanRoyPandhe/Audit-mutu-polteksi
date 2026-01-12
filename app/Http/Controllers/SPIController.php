@@ -32,10 +32,10 @@ class SPIController extends Controller
                 'auditor.user_id as auditor_id',
                 'penetapan.tahun',
                 DB::raw('CASE 
-                    WHEN pelaksanaan.status = "Selesai" THEN "Selesai"
-                    WHEN pelaksanaan.tanggal_selesai < NOW() AND pelaksanaan.status != "Selesai" THEN "Terlambat"
-                    WHEN pelaksanaan.tanggal_mulai <= NOW() AND pelaksanaan.status != "Selesai" THEN "Sedang Berjalan"
-                    ELSE "Belum Mulai"
+                    WHEN pelaksanaan.status = \'Selesai\' THEN \'Selesai\'
+                    WHEN pelaksanaan.tanggal_selesai < NOW() AND pelaksanaan.status != \'Selesai\' THEN \'Terlambat\'
+                    WHEN pelaksanaan.tanggal_mulai <= NOW() AND pelaksanaan.status != \'Selesai\' THEN \'Sedang Berjalan\'
+                    ELSE \'Belum Mulai\'
                 END as status_monitoring')
             );
 
