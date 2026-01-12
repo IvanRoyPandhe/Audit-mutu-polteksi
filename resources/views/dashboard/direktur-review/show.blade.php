@@ -49,7 +49,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Capaian Realisasi</label>
-                    <p class="text-gray-900">{{ $audit->capaian_realisasi }}%</p>
+                    <p class="text-gray-900">{{ $audit->target_capaian ?? 'Tidak tersedia' }}</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Hasil Audit</label>
@@ -65,16 +65,16 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Evaluasi Kesesuaian</label>
                     <p class="text-gray-900">{{ $audit->evaluasi_kesesuaian }}</p>
                 </div>
-                @if($audit->temuan)
+                @if($audit->rekomendasi_perbaikan)
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Temuan</label>
-                    <p class="text-gray-900">{{ $audit->temuan }}</p>
+                    <p class="text-gray-900">{{ $audit->rekomendasi_perbaikan }}</p>
                 </div>
                 @endif
-                @if($audit->rekomendasi)
+                @if($audit->rekomendasi_perbaikan)
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Rekomendasi</label>
-                    <p class="text-gray-900">{{ $audit->rekomendasi }}</p>
+                    <p class="text-gray-900">{{ $audit->rekomendasi_perbaikan }}</p>
                 </div>
                 @endif
             </div>
