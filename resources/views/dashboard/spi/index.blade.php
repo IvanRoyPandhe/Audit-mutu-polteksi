@@ -242,11 +242,25 @@ function closeNotificationModal() {
 }
 
 function loadUsers(pelaksanaanId) {
+    console.log('Loading users for pelaksanaan:', pelaksanaanId);
+    
     fetch(`/dashboard/spi/users?pelaksanaan_id=${pelaksanaanId}`)
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(users => {
+            console.log('Users loaded:', users);
             const usersList = document.getElementById('usersList');
             usersList.innerHTML = '';
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<p class="text-sm text-gray-500">Tidak ada user ditemukan untuk pelaksanaan ini</p>';
+                return;
+            }
             
             users.forEach(user => {
                 const div = document.createElement('div');
@@ -258,6 +272,11 @@ function loadUsers(pelaksanaanId) {
                 `;
                 usersList.appendChild(div);
             });
+        })
+        .catch(error => {
+            console.error('Error loading users:', error);
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '<p class="text-sm text-red-500">Error loading users. Check console for details.</p>';
         });
 }
 

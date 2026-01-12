@@ -119,19 +119,28 @@ class SPIController extends Controller
         
         if ($pelaksanaanId) {
             // Get PIC and Auditors for specific pelaksanaan
-            $pelaksanaan = DB::table('pelaksanaan')
-                ->join('users as pic', 'pelaksanaan.dibuat_oleh', '=', 'pic.user_id')
+            $users = collect();
+            
+            // Get PIC (dibuat_oleh)
+            $pic = DB::table('pelaksanaan')
+                ->join('users', 'pelaksanaan.dibuat_oleh', '=', 'users.user_id')
                 ->where('pelaksanaan.pelaksanaan_id', $pelaksanaanId)
-                ->select('pic.user_id', 'pic.name', DB::raw('"PIC" as role'))
+                ->select('users.user_id', 'users.name', DB::raw("'PIC' as role"))
                 ->first();
+            
+            if ($pic) {
+                $users->push($pic);
+            }
 
+            // Get Auditors
             $auditors = DB::table('pelaksanaan_auditors')
                 ->join('users', 'pelaksanaan_auditors.auditor_id', '=', 'users.user_id')
                 ->where('pelaksanaan_auditors.pelaksanaan_id', $pelaksanaanId)
-                ->select('users.user_id', 'users.name', DB::raw('"Auditor" as role'))
+                ->select('users.user_id', 'users.name', DB::raw("'Auditor' as role"))
                 ->get();
 
-            $users = collect([$pelaksanaan])->merge($auditors);
+            $users = $users->merge($auditors);
+            
         } else {
             // Get all users (PIC and Auditors)
             $users = DB::table('users')
