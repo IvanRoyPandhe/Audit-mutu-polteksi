@@ -57,10 +57,19 @@ class FixPermissions extends Command
             ])
         ]);
 
+        // Set permissions for SPI role
+        DB::table('role')->where('role_id', 4)->update([
+            'permissions' => json_encode([
+                'dashboard',
+                'spi-monitoring'
+            ])
+        ]);
+
         $this->info('Default permissions have been set for all roles.');
         $this->info('Admin: Full access');
         $this->info('Auditor: Dashboard, Evaluasi, Pelaksanaan, Laporan');
         $this->info('Unit Kerja: Dashboard, Standar Mutu, Kriteria, Indikator, Penetapan, Pelaksanaan, Evaluasi, Laporan');
+        $this->info('SPI: Dashboard, SPI Monitoring');
         
         return 0;
     }

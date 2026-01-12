@@ -119,6 +119,16 @@
                 </a>
                 @endif
 
+                @if($isAdmin || in_array('spi-monitoring', $permissions))
+                <a href="/dashboard/spi" class="flex items-center px-6 py-3 hover:bg-white/10">
+                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    SPI Monitoring
+                </a>
+                @endif
+
                 @if($isAdmin || in_array('buku-kebijakan', $permissions))
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center justify-between w-full px-6 py-3 hover:bg-white/10 text-left">
@@ -190,8 +200,46 @@
 
         <main class="flex-1 overflow-y-auto w-full">
             <header class="bg-white shadow-sm">
-                <div class="px-4 sm:px-8 py-4">
+                <div class="px-4 sm:px-8 py-4 flex justify-between items-center">
                     <h2 class="text-2xl font-bold text-gray-800">@yield('title')</h2>
+                    
+                    <!-- Notification Bell -->
+                    <div class="relative" x-data="{ open: false, unreadCount: 0, notifications: [] }" x-init="loadNotifications()">
+                        <button @click="open = !open" class="relative p-2 text-gray-600 hover:text-gray-800">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                            </svg>
+                            <span x-show="unreadCount > 0" x-text="unreadCount" 
+                                  class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"></span>
+                        </button>
+                        
+                        <div x-show="open" @click.away="open = false" 
+                             class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-50">
+                            <div class="p-4 border-b">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-medium text-gray-900">Notifikasi</h3>
+                                    <a href="/dashboard/notifications" class="text-sm text-blue-600 hover:text-blue-800">Lihat Semua</a>
+                                </div>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto">
+                                <template x-for="notification in notifications" :key="notification.id">
+                                    <div class="p-4 border-b hover:bg-gray-50" :class="!notification.is_read ? 'bg-blue-50' : ''">
+                                        <div class="flex items-start">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-900" x-text="notification.title"></p>
+                                                <p class="text-sm text-gray-600" x-text="notification.message.substring(0, 60) + '...'"></p>
+                                                <p class="text-xs text-gray-500" x-text="formatDate(notification.created_at)"></p>
+                                            </div>
+                                            <div x-show="!notification.is_read" class="w-2 h-2 bg-blue-600 rounded-full ml-2"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div x-show="notifications.length === 0" class="p-4 text-center text-gray-500">
+                                    Tidak ada notifikasi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </header>
             <div class="p-4 sm:p-8">
@@ -221,6 +269,36 @@
             overlay.classList.add('hidden');
         });
     </script>
+    
+    <script>
+    function loadNotifications() {
+        fetch('/dashboard/notifications/unread')
+            .then(response => response.json())
+            .then(data => {
+                this.notifications = data.notifications;
+                this.unreadCount = data.unread_count;
+            });
+    }
+    
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+        
+        if (diffInMinutes < 1) return 'Baru saja';
+        if (diffInMinutes < 60) return `${diffInMinutes} menit lalu`;
+        if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} jam lalu`;
+        return `${Math.floor(diffInMinutes / 1440)} hari lalu`;
+    }
+    
+    // Refresh notifications every 30 seconds
+    setInterval(() => {
+        if (typeof loadNotifications === 'function') {
+            loadNotifications();
+        }
+    }, 30000);
+    </script>
+    
     @stack('scripts')
 </body>
 </html>

@@ -10,10 +10,12 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\IndikatorKinerjaController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PelaksanaanController;
 use App\Http\Controllers\PenetapanController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SPIController;
 use App\Http\Controllers\StandarMutuController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UnitAuditorController;
@@ -154,5 +156,14 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::get('/direktur-review/{id}', [DirekturReviewController::class, 'show']);
         Route::put('/direktur-review/{id}', [DirekturReviewController::class, 'update']);
     });
+    Route::middleware('permission:spi-monitoring')->group(function () {
+        Route::get('/spi', [SPIController::class, 'index']);
+        Route::post('/spi/send-notification', [SPIController::class, 'sendNotification']);
+        Route::get('/spi/users', [SPIController::class, 'getUsers']);
+    });
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread', [NotificationController::class, 'getUnread']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
